@@ -39,9 +39,83 @@ function activate(context) {
         // Display a message box to the user
         vscode.window.showInformationMessage('Hello World from Easy Admin!');
     });
-    context.subscriptions.push(disposable);
+    //context.subscriptions.push(disposable);
+    //Tareas
+    context.subscriptions.push(vscode.commands.registerCommand('easy-admin.tareas', () => {
+        // Create and show a new webview
+        const panel = vscode.window.createWebviewPanel('easy-admin', // Identifies the type of the webview. Used internally
+        'Easy Admin', // Title of the panel displayed to the user
+        vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+        {} // Webview options. More on these later.
+        );
+        // And set its HTML content
+        panel.webview.html = getWebviewContentTareas();
+    }));
+    //Colaboradores
+    context.subscriptions.push(vscode.commands.registerCommand('easy-admin.colaboradores', () => {
+        // Create and show a new webview
+        const panel = vscode.window.createWebviewPanel('easy-admin', // Identifies the type of the webview. Used internally
+        'Easy Admin', // Title of the panel displayed to the user
+        vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+        {} // Webview options. More on these later.
+        );
+        // And set its HTML content
+        panel.webview.html = getWebviewContentColaboradores();
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('easy-admin.calendario', () => {
+        // Create and show a new webview
+        const panel = vscode.window.createWebviewPanel('easy-admin', // Identifies the type of the webview. Used internally
+        'Easy Admin', // Title of the panel displayed to the user
+        vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+        {} // Webview options. More on these later.
+        );
+        // And set its HTML content
+        panel.webview.html = getWebviewContentCalendario();
+    }));
 }
 exports.activate = activate;
+function getWebviewContentTareas() {
+    return `<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tareas</title>
+	</head>
+	<body>
+	
+	<img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" />
+	</body>
+	</html>`;
+}
+function getWebviewContentColaboradores() {
+    return `<!doctype html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Colaboradores</title>
+	</head>
+	<body>
+	Aquí van los colaboradores
+	
+	</body>
+	</html>`;
+}
+function getWebviewContentCalendario() {
+    return `<!doctype html>
+	<html lang="en">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Calendario</title>
+	</head>
+	<body>
+	Aquí va el calendario
+	
+	</body>
+	</html>`;
+}
 // This method is called when your extension is deactivated
 function deactivate() { }
 exports.deactivate = deactivate;

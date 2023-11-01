@@ -15,7 +15,23 @@
     "commands": [
       {
         "command": "easy-admin.helloWorld",
-        "title": "Hello World"
+        "title": "Hello World",
+        "category": "Easy-Admin"
+      },
+      {
+        "command": "easy-admin.tareas",
+        "title": "Easy-Admin Tareas",
+        "category": "Easy-Admin"
+      },
+      {
+        "command": "easy-admin.colaboradores",
+        "title": "Easy-Admin Colaboradores",
+        "category": "Easy-Admin"
+      },
+      {
+        "command": "easy-admin.calendario",
+        "title": "Easy-Admin Calendario",
+        "category": "Easy-Admin"
       }
     ],
     "viewsContainers": {
