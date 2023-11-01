@@ -25,21 +25,36 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+const tareaProvider_1 = require("./treeview/tareaProvider");
+const tareaService_1 = require("./treeview/tareaService");
 function activate(context) {
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "easy-admin" is now active!');
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('easy-admin.helloWorld', () => {
-        // The code you place here will be executed every time your command is executed
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World from Easy Admin!');
+    const tareaService = new tareaService_1.TareaService();
+    const treeDataProvider = new tareaProvider_1.TareaTreeProviderView(tareaService);
+    vscode.window.createTreeView('tareas', { treeDataProvider });
+    let agregarTarea = vscode.commands.registerCommand('easy-admin.agregarTarea', () => {
+        vscode.window.showInputBox({ prompt: 'Agregar una nueva tarea' }).then(nombre => {
+            if (nombre) {
+                tareaService.agregarTarea(nombre);
+                treeDataProvider.refresh();
+            }
+        });
     });
-    context.subscriptions.push(disposable);
+    vscode.commands.registerCommand('easy-admin.eliminarTarea', (nodo) => {
+        const label = nodo.label;
+        const index = tareaService.getTareas().findIndex(tarea => tarea.label === label);
+        if (index !== -1) {
+            tareaService.eliminarTarea(index);
+            treeDataProvider.refresh();
+        }
+    });
+    vscode.commands.registerCommand('easy-admin.alternarEstado', (nodo) => {
+        const label = nodo.label;
+        const index = tareaService.getTareas().findIndex(tarea => tarea.label === label);
+        if (index !== -1) {
+            tareaService.alternarEstado(index);
+            treeDataProvider.refresh();
+        }
+    });
 }
 exports.activate = activate;
 // This method is called when your extension is deactivated
