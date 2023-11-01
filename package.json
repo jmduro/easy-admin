@@ -17,7 +17,32 @@
         "command": "easy-admin.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "easy-admin",
+          "title": "Easy Admin",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "easy-admin": [
+        {
+          "id": "tasks",
+          "name": "Tareas"
+        },
+        {
+          "id": "helpers",
+          "name": "Colaboradores"
+        },
+        {
+          "id": "calendar",
+          "name": "Calendario"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
