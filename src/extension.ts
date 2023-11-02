@@ -9,7 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.window.createTreeView('tareas', { treeDataProvider });
 
-	let agregarTarea = vscode.commands.registerCommand('easy-admin.agregarTarea', () => {
+	vscode.commands.registerCommand('easy-admin.agregarTarea', () => {
 		vscode.window.showInputBox({ prompt: 'Agregar una nueva tarea' }).then(nombre => {
 			if (nombre) {
 				tareaService.agregarTarea(nombre);
