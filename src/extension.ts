@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.commands.registerCommand('easy-admin.eliminarTarea', (nodo: vscode.TreeItem) => {
 		const label = nodo.label as string;
-		const index = tareaService.getTareas().findIndex(tarea => tarea.label === label);
+		const index = tareaService.getTareas().findIndex(tarea => tarea.nombre === label);
 
 		if (index !== -1) {
 			tareaService.eliminarTarea(index);
@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.commands.registerCommand('easy-admin.alternarEstado', (nodo: vscode.TreeItem) => {
 		const label = nodo.label as string;
-		const index = tareaService.getTareas().findIndex(tarea => tarea.label === label);
+		const index = tareaService.getTareas().findIndex(tarea => tarea.nombre === label);
 
 		if (index !== -1) {
 			tareaService.alternarEstado(index);

@@ -25,7 +25,7 @@
         "command": "easy-admin.eliminarTarea",
         "title": "Easy Admin: Eliminar tarea",
         "icon": {
-          "light": "resources/dark/delete.svg",
+          "light": "resources/light/delete.svg",
           "dark": "resources/dark/delete.svg"
         }
       },
@@ -38,12 +38,14 @@
       "view/title": [
         {
           "command": "easy-admin.agregarTarea",
+          "when": "view == easy-admin",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "easy-admin.eliminarTarea",
+          "when": "view == easy-admin && viewItem == tarea",
           "group": "inline"
         }
       ]

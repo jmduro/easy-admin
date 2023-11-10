@@ -10,9 +10,18 @@ export class TareaTreeProviderView implements vscode.TreeDataProvider<Tarea> {
     constructor(private tareaService: TareaService) { }
 
     getTreeItem(element: Tarea): vscode.TreeItem {
-        return element;
+        return {
+            label: element.nombre,
+            collapsibleState: vscode.TreeItemCollapsibleState.None,
+            iconPath: {
+                light: '/resources/light/task.svg',
+                dark: '/resources/dark/task.svg'
+            }
+        };
     }
 
+    // Si se le pasa un element (Tarea) devuelve sus hijos (propiedades)
+    // Si no se le pasa un element, significa que es el root (Tarea)
     getChildren(element?: Tarea): Thenable<Tarea[]> {
         if (element) {
             return Promise.resolve([]);

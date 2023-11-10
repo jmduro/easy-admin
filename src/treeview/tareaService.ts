@@ -10,9 +10,7 @@ export class TareaService {
 
     agregarTarea(nombre: string) {
         this.tareas.push(new Tarea(
-            nombre,
-            false,
-            vscode.TreeItemCollapsibleState.None
+            nombre
         ));
     }
 
