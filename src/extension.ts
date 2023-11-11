@@ -1,24 +1,39 @@
 import * as vscode from 'vscode';
+import { TareaProvider } from './treeview/tarea';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	const tareaProvider = new TareaProvider();
+	vscode.window.createTreeView('tareas', { treeDataProvider: tareaProvider });
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "easy-admin" is now active!');
+	// vscode.commands.registerCommand('easy-admin.agregarTarea', () => {
+	// 	vscode.window.showInputBox({ prompt: 'Agregar una nueva tarea' }).then(nombre => {
+	// 		if (nombre) {
+	// 			tareaService.agregarTarea(nombre);
+	// 			tareaProvider.refresh();
+	// 		}
+	// 	});
+	// });
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('easy-admin.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Easy Admin!');
-	});
+	// vscode.commands.registerCommand('easy-admin.eliminarTarea', (nodo: vscode.TreeItem) => {
+	// 	const label = nodo.label as string;
+	// 	const index = tareaService.getTareas().findIndex(tarea => tarea.nombre === label);
 
-	context.subscriptions.push(disposable);
+	// 	if (index !== -1) {
+	// 		tareaService.eliminarTarea(index);
+	// 		tareaProvider.refresh();
+	// 	}
+	// });
+
+	// vscode.commands.registerCommand('easy-admin.alternarEstado', (nodo: vscode.TreeItem) => {
+	// 	const label = nodo.label as string;
+	// 	const index = tareaService.getTareas().findIndex(tarea => tarea.nombre === label);
+
+	// 	if (index !== -1) {
+	// 		tareaService.alternarEstado(index);
+	// 		tareaProvider.refresh();
+	// 	}
+	// });
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

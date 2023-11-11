@@ -14,10 +14,42 @@
   "contributes": {
     "commands": [
       {
-        "command": "easy-admin.helloWorld",
-        "title": "Hello World"
+        "command": "easy-admin.agregarTarea",
+        "title": "Easy Admin: Agregar tarea",
+        "icon": {
+          "light": "resources/light/add.svg",
+          "dark": "resources/dark/add.svg"
+        }
+      },
+      {
+        "command": "easy-admin.eliminarTarea",
+        "title": "Easy Admin: Eliminar tarea",
+        "icon": {
+          "light": "resources/light/delete.svg",
+          "dark": "resources/dark/delete.svg"
+        }
+      },
+      {
+        "command": "easy-admin.altenarEstado",
+        "title": "Easy Admin: Marcar tarea como completada"
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "easy-admin.agregarTarea",
+          "when": "view == easy-admin",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "easy-admin.eliminarTarea",
+          "when": "view == easy-admin && viewItem == tarea",
+          "group": "inline"
+        }
+      ]
+    },
     "viewsContainers": {
       "activitybar": [
         {
@@ -30,15 +62,15 @@
     "views": {
       "easy-admin": [
         {
-          "id": "tasks",
+          "id": "tareas",
           "name": "Tareas"
         },
         {
-          "id": "helpers",
+          "id": "colaboradores",
           "name": "Colaboradores"
         },
         {
-          "id": "calendar",
+          "id": "calendario",
           "name": "Calendario"
         }
       ]
