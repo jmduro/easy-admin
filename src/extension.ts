@@ -39,6 +39,8 @@ export function activate(context: vscode.ExtensionContext) {
 	// 	}
 	// });
 	//context.subscriptions.push(disposable);
+
+	
 	//Tareas
 	context.subscriptions.push(
 		vscode.commands.registerCommand('easy-admin.tareas', () => {
