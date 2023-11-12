@@ -74,6 +74,7 @@ export function activate(context: vscode.ExtensionContext) {
 			);
 
 			panel.webview.html = getWebviewContentColaboradores();
+			//Colaboradores.createOrShow(context.extensionUri);
 		})
 	);
 
@@ -87,6 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
 			);
 
 			panel.webview.html = getWebviewContentCalendario();
+			//Calendario.createOrShow(context.extensionUri);
 		})
 	);
 }
