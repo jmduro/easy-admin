@@ -1,7 +1,88 @@
-// Función para agregar tareas
-function addTask() {
-    // Obtener el nombre de la tarea del input
+const fs = require('fs');
+const path = require('path');
+
+const dataFilePath = path.resolve(__dirname, 'tasks.json');
+
+// Función para cargar las tareas almacenadas localmente
+function loadTasks() {
+    try {
+        const data = fs.readFileSync(dataFilePath, 'utf-8');
+        return JSON.parse(data);
+    } catch (error) {
+        console.error('Error al cargar las tareas:', error);
+        return [];
+    }
+}
+
+// Función para guardar las tareas localmente
+function saveTasks(tasks) {
+    try {
+        const data = JSON.stringify(tasks, null, 2);
+        fs.writeFileSync(dataFilePath, data, 'utf-8');
+    } catch (error) {
+        console.error('Error al guardar las tareas:', error);
+    }
+}
+
+// Función para inicializar la aplicación
+function initializeApp() {
+    // Cargar las tareas almacenadas localmente
+    const storedTasks = loadTasks();
+
+    // Llenar la tabla con las tareas cargadas
+    for (const task of storedTasks) {
+        addTaskToTable(task);
+    }
+
+    // Actualizar la barra de progreso
+    updateProgressBar();
+}
+
+// Función para agregar/modificar tareas
+function addOrUpdateTask() {
+    // Obtener los datos del formulario
+    // ...
+
+    // Crear un objeto con los datos de la tarea
+    const newTask = {
+        name: taskName,
+        description: taskDescription,
+        date: taskDate,
+        priority: taskPriority,
+        completed: taskCompleted
+    };
+
+    // Obtener las tareas actuales
+    const currentTasks = loadTasks();
+
+    // Agregar la nueva tarea a la lista
+    currentTasks.push(newTask);
+
+    // Guardar las tareas actualizadas
+    saveTasks(currentTasks);
+
+    // Limpiar el formulario
+    clearForm();
+
+    // Limpiar la tabla
+    clearTable();
+
+    // Llenar la tabla con las tareas actualizadas
+    for (const task of currentTasks) {
+        addTaskToTable(task);
+    }
+
+    // Actualizar la barra de progreso
+    updateProgressBar();
+}
+		// Función para agregar/modificar tareas
+function addOrUpdateTask() {
+    // Obtener los datos del formulario
     var taskName = document.getElementById('taskName').value;
+    var taskDescription = document.getElementById('taskDescription').value;
+    var taskDate = document.getElementById('taskDate').value;
+    var taskPriority = document.getElementById('taskPriority').value;
+    var taskCompleted = document.getElementById('taskCompleted').checked;
 
     // Validar que el nombre de la tarea no esté vacío
     if (taskName.trim() === '') {
@@ -17,13 +98,81 @@ function addTask() {
     cell1.appendChild(document.createTextNode(taskName));
     newRow.appendChild(cell1);
 
-    // Puedes agregar más celdas según tus necesidades
+    var cell2 = document.createElement('td');
+    cell2.appendChild(document.createTextNode(taskDescription));
+    newRow.appendChild(cell2);
+
+    var cell3 = document.createElement('td');
+    cell3.appendChild(document.createTextNode(taskDate));
+    newRow.appendChild(cell3);
+
+    var cell4 = document.createElement('td');
+    cell4.appendChild(document.createTextNode(taskPriority));
+    newRow.appendChild(cell4);
+
+    var cell5 = document.createElement('td');
+    var checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = taskCompleted;
+    cell5.appendChild(checkbox);
+    newRow.appendChild(cell5);
+
+    var cell6 = document.createElement('td');
+    var editButton = document.createElement('button');
+    editButton.textContent = 'Editar';
+    editButton.onclick = function () {
+        editTask(newRow);
+    };
+    cell6.appendChild(editButton);
+
+    var deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Eliminar';
+    deleteButton.onclick = function () {
+        deleteTask(newRow);
+    };
+    cell6.appendChild(deleteButton);
+
+    newRow.appendChild(cell6);
 
     // Añadir la fila a la tabla
     document.getElementById('taskList').appendChild(newRow);
 
-    // Limpiar el input
+    // Limpiar el formulario después de agregar/modificar
+    clearForm();
+
+    // Actualizar la barra de progreso
+    updateProgressBar();
+}
+
+// Función para limpiar el formulario
+function clearForm() {
     document.getElementById('taskName').value = '';
+    document.getElementById('taskDescription').value = '';
+    document.getElementById('taskDate').value = '';
+    document.getElementById('taskPriority').value = 'alta';
+    document.getElementById('taskCompleted').checked = false;
+}
+
+// Función para editar tarea
+function editTask(row) {
+    // Llenar el formulario con los datos de la tarea seleccionada
+    document.getElementById('taskName').value = row.cells[0].textContent;
+    document.getElementById('taskDescription').value = row.cells[1].textContent;
+    document.getElementById('taskDate').value = row.cells[2].textContent;
+    document.getElementById('taskPriority').value = row.cells[3].textContent;
+    document.getElementById('taskCompleted').checked = row.cells[4].querySelector('input[type="checkbox"]').checked;
+
+    // Eliminar la fila existente
+    row.remove();
+
+    // Actualizar la barra de progreso
+    updateProgressBar();
+}
+
+// Función para eliminar tarea
+function deleteTask(row) {
+    // Eliminar la fila
+    row.remove();
 
     // Actualizar la barra de progreso
     updateProgressBar();
@@ -36,9 +185,6 @@ function updateProgressBar() {
 
     var progressPercentage = (completedTasks / totalTasks) * 100;
 
-    // Actualizar la barra de progreso
     document.getElementById('progress').style.width = progressPercentage + '%';
-
-    // Actualizar el texto del porcentaje
     document.getElementById('progressText').innerText = progressPercentage.toFixed(2) + '%';
 }

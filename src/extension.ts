@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { TareaProvider } from './treeview/tarea';
 
-import { Tarea, getWebviewContentTareas } from './webview/tareas';
+import { Tarea } from './webview/tareas';
 import { getWebviewContentColaboradores } from './webview/colaboradores';
 import { getWebviewContentCalendario } from './webview/calendario';
 import { Example } from './webview/example';
