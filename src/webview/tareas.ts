@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
+import * as tareas from "./tareas.js";
 
 
 export class Tarea {
@@ -35,7 +36,7 @@ export class Tarea {
 				// And restrict the webview to only loading content from our extension's `media` directory.
 				localResourceRoots: [
 					vscode.Uri.joinPath(extensionUri, "src/media"),
-					vscode.Uri.joinPath(extensionUri, "out/compiled/webview"),
+					
 				],
 			}
 		);
@@ -132,7 +133,7 @@ export class Tarea {
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/vscode.css")
 		);
 		const stylesSkinUri = webview.asWebviewUri(
-			vscode.Uri.joinPath(this._extensionUri, "src", "webview/styles.css")
+			vscode.Uri.joinPath(this._extensionUri, "src", "webview/tareas.css")
 		);
 		const cssUri = webview.asWebviewUri(
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/main.css")
@@ -142,23 +143,48 @@ export class Tarea {
 		// Use a nonce to only allow specific scripts to be run
 		const nonce = getNonce();
 
+
 		return `<!DOCTYPE html>
 		<html lang="en">
 		<head>
 			<meta charset="UTF-8">
-            <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'nonce-${nonce}';">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<link href="${stylesResetUri}" rel="stylesheet">
 			<link href="${stylesMainUri}" rel="stylesheet">
-                
+            <link rel="stylesheet" href="tareas.css">
         <script nonce="${nonce}"></script>
 		</head>
     <body>
+	<script src="${scriptTarea}"></script>
+	<div id="app" class=""></div>
 		<h1>${nameProject}</h1>
-        <h1>Lista de Tareas</h1>
-        
+
+        <button type="button" onClick="initializeApp()">Iniciar</button>
+
 		<!-- Formulario para agregar/modificar tareas -->
-		<form class="task-form" id="taskForm">
+		<h2>Agregar Nueva Tarea</h2>
+		<form id="taskForm">
+			<label for="activity">Actividad:</label>
+			<input type="text" id="activity" name="activity" required>
+
+			<label for="date">Fecha:</label>
+			<input type="date" id="date" name="date" required>
+
+			<label for="details">Detalles:</label>
+			<textarea id="details" name="details" required></textarea>
+
+			<label for="assignee">Encargado:</label>
+			<input type="text" id="assignee" name="assignee" required>
+
+			<label for="completed">Completado:</label>
+			<input type="checkbox" id="completed" name="completed">
+
+			<button type="button" onclick="addTask()">Agregar Tarea</button>
+		</form>
+		
+		
+		<!--<form class="task-form" id="taskForm">
 			<label for="taskName">Nombre de la actividad</label>
 			<input type="text" id="taskName" name="taskName" required>
 
@@ -180,40 +206,39 @@ export class Tarea {
 			<label for="taskCompleted">Completado</label>
 	
 			<button type="button" onclick="addOrUpdateTask()">Agregar/Modificar Tarea</button>
-		</form>
+		</form>  -->
 
 		<!-- Tabla de tareas -->
+		<h2>Lista de Tareas</h2>
 		<table>
 			<thead>
 				<tr>
 					<th>Actividad</th>
 					<th>Fecha</th>
-					<th>Descripción</th>
+					<th>Detalles</th>
 					<th>Encargado</th>
 					<th>Completado</th>
-					<th>Acciones</th>
 				</tr>
 			</thead>
-			<tbody id="taskList">
-				<!-- Aquí se insertarán dinámicamente las filas de la tabla -->
-				<th>Actividad 1</th>
-					<th>25 de octubre</th>
-					<th>Documentación</th>
-					<th>Jorge</th>
-					<th>Completado</th>
-					<th>Acciones</th>
-			</tbody>
+			<tbody id="tasksTableBody"></tbody>
 		</table>
+				<!-- <tbody id="taskList">Aquí se insertarán dinámicamente las filas de la tabla -->
 
 		<!-- Barra de progreso -->
-		<div class="progress-bar">
-			<div class="progress" id="progress"></div>
-			<div class="progress-text" id="progressText">0%</div>
+
+		<h2>Progreso</h2>
+		<div id="progressBarContainer">
+			<progress id="progressBar" max="100" value="0"></progress>
+			<span id="progressLabel">0%</span>
 		</div>
 
+		<!-- <div class="progress-bar">
+			<div class="progress" id="progress"></div>
+			<div class="progress-text" id="progressText">0%</div>
+		</div> -->
+		<script src="tareas.js"></script>
 	</body>
 	<script src="${scriptUri}" nonce="${nonce}"></script>
-	<script src="${scriptTarea}"></script>
 	</html>`;
 	}
 }
