@@ -34,6 +34,10 @@
         "title": "Easy Admin: Marcar tarea como completada"
       },
       {
+        "command": "easy-admin.example",
+        "title": "example"
+      },
+      {
         "command": "easy-admin.tareas",
         "title": "Mostrar Tareas"
       },
