@@ -5,70 +5,6 @@ export function getWebviewContentTareas() {
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Lista de Tareas</title>
-		<style>
-		body {
-			font-family: 'Arial', sans-serif;
-			background-color: #f5f5f5;
-			color: #333;
-			margin: 20px;
-		}
-		
-		table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-top: 20px;
-		}
-		
-		th, td {
-			border: 1px solid #ddd;
-			padding: 12px;
-			text-align: left;
-		}
-		
-		th {
-			background-color: #4CAF50;
-			color: white;
-		}
-		
-		tr:nth-child(even) {
-			background-color: #f2f2f2;
-		}
-		
-		.add-task-form {
-			margin-top: 20px;
-			display: flex;
-		}
-		
-		.add-task-input {
-			flex: 1;
-			padding: 10px;
-		}
-		
-		.add-task-button {
-			padding: 10px;
-			background-color: #4CAF50;
-			color: white;
-			border: none;
-			cursor: pointer;
-		}
-		
-		.progress-bar {
-			margin-top: 20px;
-			display: flex;
-			align-items: center;
-		}
-		
-		.progress {
-			height: 20px;
-			background-color: #4CAF50;
-			width: 0;
-		}
-		
-		.progress-text {
-			margin-left: 10px;
-		}
-		
-		</style>
 	</head>
 	<body>
 		<h1>Lista de Tareas</h1>
@@ -318,74 +254,165 @@ function updateProgressBar() {
 	`;
 }
 
-/*
-export function getWebviewContentTareas() {
-	return `<!DOCTYPE html>
-	<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Lista de Tareas</title>
-		<!-- Estilo CSS -->
-		<link rel="stylesheet" href="styles.css">
-	</head>
-	<body>
-		<h1>Lista de Tareas</h1>
-	
-		<!-- Tabla de tareas -->
-		<table>
-			<thead>
-				<tr>
-					<th>Tarea</th>
-					<th>Descripción</th>
-					<th>Fecha</th>
-					<th>Prioridad</th>
-					<th>Completado</th>
-				</tr>
-			</thead>
-			<tbody id="taskList">
-				<!-- Aquí se insertarán dinámicamente las filas de la tabla -->
-			</tbody>
-		</table>
-	
-		<!-- Barra de progreso -->
-		<div class="progress-bar">
-			<div class="progress" id="progress"></div>
-			<div class="progress-text" id="progressText">0%</div>
-		</div>
-	
-		<!-- Formulario para agregar tareas -->
-		<form class="add-task-form" id="addTaskForm">
-			<input type="text" class="add-task-input" placeholder="Nueva tarea" id="taskName">
-			<button type="button" class="add-task-button" onclick="addTask()">Agregar Tarea</button>
-		</form>
+import * as vscode from "vscode";
+import { getNonce } from "./getNonce";
 
-		<button type="button" class="" onclick="addTarea()">Agregar Tareas</button>
-	
-		<script src="tareas.js"></script>
-	</body>
-	</html>`;
+
+export class Tarea {
+    public static currentPanel: Tarea | undefined;
+
+    public static readonly viewType = "swiper";
+
+    private readonly _panel: vscode.WebviewPanel;
+    private readonly _extensionUri: vscode.Uri;
+    private _disposables: vscode.Disposable[] = [];
+
+    public static createOrShow(extensionUri: vscode.Uri) {
+        const column = vscode.window.activeTextEditor
+            ? vscode.window.activeTextEditor.viewColumn
+            : undefined;
+
+        // If we already have a panel, show it.
+        if (Tarea.currentPanel) {
+            Tarea.currentPanel._panel.reveal(column);
+            Tarea.currentPanel._update();
+            return;
+        }
+
+        // Otherwise, create a new panel.
+        const panel = vscode.window.createWebviewPanel(
+            Tarea.viewType,
+            "Tareas",
+            column || vscode.ViewColumn.One,
+            {
+                // Enable javascript in the webview
+                enableScripts: true,
+
+                // And restrict the webview to only loading content from our extension's `media` directory.
+                localResourceRoots: [
+                    vscode.Uri.joinPath(extensionUri, "src/media"),
+                    vscode.Uri.joinPath(extensionUri, "out/compiled/webview"),
+                ],
+            }
+        );
+
+        Tarea.currentPanel = new Tarea(panel, extensionUri);
+    }
+
+    public static kill() {
+        Tarea.currentPanel?.dispose();
+        Tarea.currentPanel = undefined;
+    }
+
+    public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+        Tarea.currentPanel = new Tarea(panel, extensionUri);
+    }
+
+    private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+        this._panel = panel;
+        this._extensionUri = extensionUri;
+
+        // Set the webview's initial html content
+        this._update();
+
+        // Listen for when the panel is disposed
+        // This happens when the user closes the panel or when the panel is closed programatically
+        this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
+
+        // // Handle messages from the webview
+        // this._panel.webview.onDidReceiveMessage(
+        //   (message) => {
+        //     switch (message.command) {
+        //       case "alert":
+        //         vscode.window.showErrorMessage(message.text);
+        //         return;
+        //     }
+        //   },
+        //   null,
+        //   this._disposables
+        // );
+    }
+
+    public dispose() {
+        Tarea.currentPanel = undefined;
+
+        // Clean up our resources
+        this._panel.dispose();
+
+        while (this._disposables.length) {
+            const x = this._disposables.pop();
+            if (x) {
+                x.dispose();
+            }
+        }
+    }
+
+    private async _update() {
+        const webview = this._panel.webview;
+
+        this._panel.webview.html = this._getHtmlForWebview(webview);
+        webview.onDidReceiveMessage(async (data) => {
+            switch (data.type) {
+                case "onInfo": {
+                    if (!data.value) {
+                        return;
+                    }
+                    vscode.window.showInformationMessage(data.value);
+                    break;
+                }
+                case "onError": {
+                    if (!data.value) {
+                        return;
+                    }
+                    vscode.window.showErrorMessage(data.value);
+                    break;
+                }
+
+            }
+        });
+    }
+
+    private _getHtmlForWebview(webview: vscode.Webview) {
+        // And the uri we use to load this script in the webview
+        const scriptUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, "src", "media/main.js")
+        );
+
+        // Uri to load styles into webview
+        const stylesResetUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, "src", "media/reset.css")
+        );
+        const stylesMainUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, "src", "media/vscode.css")
+            );
+        const stylesSkinUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, "src", "webview/styles.css")
+            );
+        const cssUri = webview.asWebviewUri(
+            vscode.Uri.joinPath(this._extensionUri, "src", "media/main.css")
+        );
+
+        // Use a nonce to only allow specific scripts to be run
+        const nonce = getNonce();
+
+        return `<!DOCTYPE html>
+			<html lang="en">
+			<head>
+			    <meta charset="UTF-8">
+                <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'nonce-${nonce}';">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<link href="${stylesResetUri}" rel="stylesheet">
+				<link href="${stylesMainUri}" rel="stylesheet">
+                
+                <script nonce="${nonce}"></script>
+			</head>
+            <body>
+                <h1>Hello World</h1>
+                <p>Probando cositas</p>
+                <input type="text" />
+                <button>try</button>
+			</body>
+			<script src="${scriptUri}" nonce="${nonce}"></script>
+			</html>`;
+    }
 }
-/*
-import * as path from 'path';
-import * as fs from 'fs';
-
-export function getWebviewContentTareas(): string {
-	try {
-		// Obtén la ruta absoluta al archivo HTML
-		const htmlPath = path.resolve(__dirname, 'tareas.html');
-
-		// Lee el contenido del archivo HTML desde la ruta absoluta
-		const htmlContent = fs.readFileSync(htmlPath, 'utf-8');
-	    
-		// Puedes hacer más cosas con el contenido del archivo si es necesario
-
-		return htmlContent;
-	} catch (error) {
-		console.error('Error al leer el archivo HTML:', error);
-		// En caso de error, puedes devolver un HTML predeterminado o lanzar una excepción según tus necesidades
-		return '<html><body><p>Error al cargar el contenido HTML</p></body></html>';
-	}
-}
-
-*/

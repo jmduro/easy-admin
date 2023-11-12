@@ -35,7 +35,7 @@
       },
       {
         "command": "easy-admin.example",
-        "title": "example"
+        "title": "Mostrar ejemplo"
       },
       {
         "command": "easy-admin.tareas",

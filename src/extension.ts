@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
 import { TareaProvider } from './treeview/tarea';
 
-import { getWebviewContentTareas } from './webview/tareas';
+import { Tarea, getWebviewContentTareas } from './webview/tareas';
 import { getWebviewContentColaboradores } from './webview/colaboradores';
 import { getWebviewContentCalendario } from './webview/calendario';
 import { Example } from './webview/example';
+
 
 export function activate(context: vscode.ExtensionContext) {
 	const tareaProvider = new TareaProvider();
@@ -50,14 +51,15 @@ export function activate(context: vscode.ExtensionContext) {
 	//Tareas
 	context.subscriptions.push(
 		vscode.commands.registerCommand('easy-admin.tareas', () => {
-			const panel = vscode.window.createWebviewPanel(
+			Tarea.createOrShow(context.extensionUri);
+			/*const panel = vscode.window.createWebviewPanel(
 				'easy-admin',
 				'Easy Admin',
 				vscode.ViewColumn.One,
 				{}
 			);
 
-			panel.webview.html = getWebviewContentTareas();
+			panel.webview.html = getWebviewContentTareas(); */
 		})
 	);
 
