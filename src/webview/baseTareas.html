@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tareas</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .progress-bar {
+            margin-top: 20px;
+            height: 20px;
+            background-color: #ddd;
+            position: relative;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0;
+        }
+
+        .add-task-form {
+            margin-top: 20px;
+            display: flex;
+        }
+
+        .add-task-input {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .add-task-button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Tareas</h1>
+
+    <!-- Barra de progreso -->
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- Tabla de tareas -->
+    <table>
+        <thead>
+            <tr>
+                <th>Tarea</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Prioridad</th>
+                <th>Completado</th>
+            </tr>
+        </thead>
+        <tbody id="taskList">
+            <!-- Aquí se insertarán dinámicamente las filas de la tabla -->
+        </tbody>
+    </table>
+
+    <!-- Formulario para agregar tareas -->
+    <form class="add-task-form" id="addTaskForm">
+        <input type="text" class="add-task-input" placeholder="Nueva tarea" id="taskName">
+        <button type="button" class="add-task-button" onclick="addTask()">Agregar Tarea</button>
+    </form>
+
+    <script>
+        // Función para agregar tareas
+        function addTask() {
+            // Obtener el nombre de la tarea del input
+            var taskName = document.getElementById('taskName').value;
+
+            // Validar que el nombre de la tarea no esté vacío
+            if (taskName.trim() === '') {
+                alert('Por favor, ingrese un nombre para la tarea.');
+                return;
+            }
+
+            // Crear una nueva fila para la tabla
+            var newRow = document.createElement('tr');
+
+            // Añadir celdas con los datos de la tarea
+            var cell1 = document.createElement('td');
+            cell1.appendChild(document.createTextNode(taskName));
+            newRow.appendChild(cell1);
+
+            // Puedes agregar más celdas según tus necesidades
+
+            // Añadir la fila a la tabla
+            document.getElementById('taskList').appendChild(newRow);
+
+            // Limpiar el input
+            document.getElementById('taskName').value = '';
+
+            // Actualizar la barra de progreso
+            updateProgressBar();
+        }
+
+        // Función para actualizar la barra de progreso
+        function updateProgressBar() {
+            var totalTasks = document.getElementById('taskList').getElementsByTagName('tr').length - 1; // Restamos 1 para excluir la fila de encabezado
+            var completedTasks = document.getElementById('taskList').querySelectorAll('input[type="checkbox"]:checked').length;
+
+            var progressPercentage = (completedTasks / totalTasks) * 100;
+            document.getElementById('progress').style.width = progressPercentage + '%';
+        }
+    </script>
+</body>
+</html>

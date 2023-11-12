@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Tarea 1",
+        "description": "Descripción de la tarea 1",
+        "date": "2023-11-13",
+        "priority": "alta",
+        "completed": false
+    },
+    {
+        "name": "Tarea 2",
+        "description": "Descripción de la tarea 2",
+        "date": "2023-11-14",
+        "priority": "media",
+        "completed": true
+    }
+    // ... otras tareas
+]

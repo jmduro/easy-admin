@@ -34,24 +34,16 @@
         "title": "Easy Admin: Marcar tarea como completada"
       },
       {
-        "command": "easy-admin.helloWorld",
-        "title": "Hello World",
-        "category": "Easy-Admin"
-      },
-      {
         "command": "easy-admin.tareas",
-        "title": "Mostrar Tareas",
-        "category": "Easy-Admin"
+        "title": "Mostrar Tareas"
       },
       {
         "command": "easy-admin.colaboradores",
-        "title": "Easy-Admin Colaboradores",
-        "category": "Easy-Admin"
+        "title": "Mostrar Colaboradores"
       },
       {
         "command": "easy-admin.calendario",
-        "title": "Easy-Admin Calendario",
-        "category": "Easy-Admin"
+        "title": "Desplegar Calendario"
       }
     ],
     "menus": {
