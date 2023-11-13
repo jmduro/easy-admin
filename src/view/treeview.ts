@@ -19,6 +19,7 @@ export class TareaProvider implements vscode.TreeDataProvider<TareaTreeViewAdapt
                 item.iconPath = new vscode.ThemeIcon('circle-outline');
             }
             item.tooltip = tarea.nombre;
+            item.contextValue = 'tarea';
             return item;
         });
         return arr;

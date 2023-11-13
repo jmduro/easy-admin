@@ -47,9 +47,13 @@ export class Colaborador {
         if (obj === null) { return false; }
         if (typeof this !== typeof obj) { return false; }
         let encargado: Colaborador = obj as Colaborador;
+        let nombre: RegExp = new RegExp(`.*${encargado.nombre}.*`);
+        let correo: RegExp = new RegExp(`.*${encargado.correo}.*`);
+        let puesto: RegExp = new RegExp(`.*${encargado.puesto}.*`);
         return(
-            this.nombre === encargado.
-
+            nombre.test(this.nombre) &&
+            correo.test(this.correo) &&
+            puesto.test(this.puesto)
         );
     }
 
@@ -128,6 +132,24 @@ export class Tarea {
 
     set completado(completado: boolean) {
         this._completado = completado;
+    }
+
+    public like(obj: Object): boolean {
+        if (this === obj) { return true; }
+        if (obj === null) { return false; }
+        if (typeof this !== typeof obj) { return false; }
+        let tarea: Tarea = obj as Tarea;
+        let nombre: RegExp = new RegExp(`.*${tarea.nombre}.*`);
+        let fechaLimite: RegExp = new RegExp(`${tarea.fechaLimite}`);
+        let encargado: RegExp = new RegExp(`${tarea.encargado}`);
+        let descripcion: RegExp = new RegExp(`${tarea.descripcion}`);
+        return(
+            nombre.test(this.nombre) &&
+            fechaLimite.test(this.fechaLimite) &&
+            encargado.test(this.encargado) &&
+            descripcion.test(this.descripcion) &&
+            this.completado === tarea.completado
+        );
     }
 
     public equals(obj: Object): boolean {
