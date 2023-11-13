@@ -1,4 +1,4 @@
-export class Encargado {
+export class Colaborador {
     private _nombre: string;
     private _correo: string;
     private _puesto: string;
@@ -46,7 +46,7 @@ export class Encargado {
         if (this === obj) { return true; }
         if (obj === null) { return false; }
         if (typeof this !== typeof obj) { return false; }
-        let encargado: Encargado = obj as Encargado;
+        let encargado: Colaborador = obj as Colaborador;
         return (
             this.nombre === encargado.nombre &&
             this.correo === encargado.correo &&
@@ -62,7 +62,7 @@ export class Encargado {
 export class Tarea {
     private _nombre: string;
     private _fechaLimite: Date;
-    private _encargado?: Encargado;
+    private _encargado?: Colaborador;
     public descripcion: string;
     private _completado: boolean;
 
@@ -101,7 +101,7 @@ export class Tarea {
         return '';
     }
 
-    set encargado(encargado: Encargado) {
+    set encargado(encargado: Colaborador) {
         if (encargado) {
             this._encargado = encargado;
         }

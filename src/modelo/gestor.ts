@@ -1,4 +1,4 @@
-import { Tarea, Encargado } from "./entidad";
+import { Tarea, Colaborador } from "./entidad";
 
 interface Gestor<T> {
     agregar(entidad: T): void;
@@ -41,22 +41,22 @@ export class GestorTareas implements Gestor<Tarea> {
     }
 }
 
-export class GestorEncargados implements Gestor<Encargado> {
+export class GestorEncargados implements Gestor<Colaborador> {
     private static encargados: Tarea[] = [];
 
-    agregar(entidad: Encargado): void {
+    agregar(entidad: Colaborador): void {
         throw new Error("Method not implemented.");
     }
-    modificar(entidadActual: Encargado, entidadNueva: Encargado): void {
+    modificar(entidadActual: Colaborador, entidadNueva: Colaborador): void {
         throw new Error("Method not implemented.");
     }
-    eliminar(entidad: Encargado): void {
+    eliminar(entidad: Colaborador): void {
         throw new Error("Method not implemented.");
     }
-    buscar(entidad: Encargado): Encargado {
+    buscar(entidad: Colaborador): Colaborador {
         throw new Error("Method not implemented.");
     }
-    consultarTodos(): Encargado[] {
+    consultarTodos(): Colaborador[] {
         throw new Error("Method not implemented.");
     }
 

@@ -1,13 +1,12 @@
-// TODO
-// import * as vscode from 'vscode';
-// import { Tarea } from './entidad'
+import * as vscode from 'vscode';
+import { Tarea } from './entidad';
 
-// class TareaAdapter extends vscode.TreeItem {
+export class TareaTreeViewAdapter extends vscode.TreeItem {
 
-//     private _tarea: Tarea;
+    public tarea?: Tarea;
 
-//     constructor(tarea: Tarea) {
-//         super(tarea.);
-//         this._tarea = tarea;
-//     }
-// }
+    constructor(tarea?: Tarea) {
+        super('');
+        this.tarea = tarea;
+    }
+}
