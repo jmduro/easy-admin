@@ -42,6 +42,17 @@ export class Colaborador {
         this._puesto = puesto;
     }
 
+    public like(obj: Object): boolean {
+        if (this === obj) { return true; }
+        if (obj === null) { return false; }
+        if (typeof this !== typeof obj) { return false; }
+        let encargado: Colaborador = obj as Colaborador;
+        return(
+            this.nombre === encargado.
+
+        );
+    }
+
     public equals(obj: Object): boolean {
         if (this === obj) { return true; }
         if (obj === null) { return false; }

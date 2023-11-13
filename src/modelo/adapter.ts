@@ -1,7 +1,7 @@
-import * as vscode from 'vscode';
+import { TreeItem } from 'vscode';
 import { Tarea } from './entidad';
 
-export class TareaTreeViewAdapter extends vscode.TreeItem {
+export class TareaTreeViewAdapter extends TreeItem {
 
     public tarea?: Tarea;
 

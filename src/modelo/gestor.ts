@@ -12,7 +12,7 @@ export class GestorTareas implements Gestor<Tarea> {
     private static tareas: Tarea[] = [];
 
     constructor(tareas?: Tarea[]) {
-        if (tareas) { 
+        if (tareas) {
             GestorTareas.tareas = tareas;
         }
     }
@@ -25,11 +25,12 @@ export class GestorTareas implements Gestor<Tarea> {
     }
 
     modificar(entidadActual: Tarea, entidadNueva: Tarea): void {
-        throw new Error("Method not implemented.");
+        let tarea = this.buscar(entidadActual);
+        tarea = entidadNueva;
     }
 
     eliminar(entidad: Tarea): void {
-        throw new Error("Method not implemented.");
+
     }
 
     buscar(entidad: Tarea): Tarea | undefined {
@@ -38,10 +39,6 @@ export class GestorTareas implements Gestor<Tarea> {
 
     consultarTodos(): Tarea[] {
         return GestorTareas.tareas;
-    }
-
-    static obtenerTareas(): Tarea[] {
-        return this.tareas;
     }
 }
 

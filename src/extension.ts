@@ -8,7 +8,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// TODO: Valores por defecto. Borrar al poner en producción
 	const colaboradores: Colaborador[] = [];
-	let colaborador: Colaborador = new Colaborador();
+	let colaborador: Colaborador;
+
+	colaborador = new Colaborador();
 	colaborador.nombre = 'Alejo';
 	colaboradores.push(colaborador);
 
