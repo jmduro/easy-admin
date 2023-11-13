@@ -6,8 +6,11 @@ import { GestorTareas } from './modelo/gestor';
 
 export function activate(context: vscode.ExtensionContext) {
 
+	// TODO: Valores por defecto. Borrar al poner en producción
+	const colaboradores: Colaborador[] = [];
 	let colaborador: Colaborador = new Colaborador();
 	colaborador.nombre = 'Alejo';
+	colaboradores.push(colaborador);
 
 	const tareas: Tarea[] = [];
 	let tarea: Tarea;
