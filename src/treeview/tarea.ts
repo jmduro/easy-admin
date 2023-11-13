@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 class Tarea {
     constructor(
         public nombre: string,
-        public fechaLimite: Date,
+        private fechaLimite: Date,
         public encargado: string,
         public descripcion: string,
         public completado: boolean
@@ -36,6 +36,18 @@ class Item extends vscode.TreeItem {
         }
         return valor;
     }
+}
+
+class GestorTareas {
+
+    constructor(
+        private tareas: Tarea[] = []
+    ) {}
+
+    agregarTarea() {
+
+    }
+
 }
 
 export class TareaProvider implements vscode.TreeDataProvider<Item> {
