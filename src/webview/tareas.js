@@ -1,9 +1,9 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     // Cargar tareas guardadas al abrir la webview
     loadTasks();
 
     // Agregar tarea al hacer clic en el botón
-    document.getElementById("taskForm").addEventListener("submit", (event) => {
+    document.getElementById('taskForm').addEventListener('submit', (event) => {
         event.preventDefault();
         addTask();
     });
@@ -15,53 +15,58 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function addTask() {
-    const activity = document.getElementById("activity").value;
-    const date = document.getElementById("date").value;
-    const details = document.getElementById("details").value;
-    const assignee = document.getElementById("assignee").value;
+    const activity = document.getElementById('activity').value;
+    const date = document.getElementById('date').value;
+    const details = document.getElementById('details').value;
+    const assignee = document.getElementById('assignee').value;
 
     // Crear un nuevo checkbox y obtener su estado
-    const completed = document.getElementById("completed").checked;
+    const completed = document.getElementById('completed').checked;
 
-    const task = { activity, date, details, assignee, completed };
+    const tarea = new Tarea();
+    tarea.nombre = activity;
+    tarea.fechaLimite = date;
+    tarea.descripcion = details;
+    tarea.encargado = new Encargado(assignee);
+    tarea.completado = completed;
 
     // Agregar tarea a la tabla
-    appendTaskToTable(task);
+    appendTaskToTable(tarea);
 
     // Calcular y actualizar el progreso
     updateProgress();
 
     // Limpiar el formulario
-    document.getElementById("taskForm").reset();
+    document.getElementById('taskForm').reset();
 
-    // Guardar tareas localmente
-    saveTasks();
+    // Guardar tarea localmente
+    saveTask(tarea);
 }
 
-function appendTaskToTable(task) {
+function appendTaskToTable(tarea) {
     const tableBody = document.getElementById('tasksTableBody');
     const row = tableBody.insertRow();
 
-    for (const key in task) {
-        if (task.hasOwnProperty(key)) {
+    for (const key in tarea) {
+        if (tarea.hasOwnProperty(key)) {
             const cell = row.insertCell();
-            if (key === 'completed') {
+            if (key === 'completado') {
                 // Crear un nuevo checkbox y establecer su estado
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.name = 'completed';
-                checkbox.checked = task[key];
+                checkbox.checked = tarea[key];
                 cell.appendChild(checkbox);
             } else {
                 // Para otras claves, simplemente agregar el contenido de la tarea
-                cell.textContent = task[key];
+                cell.textContent = tarea[key];
             }
         }
     }
 }
 
 function updateProgress() {
-    console.log('updateProgress function called');
+    console.log('updateProgress function called'); // Agrega esta línea
 
     const totalTasks = document.getElementById('tasksTableBody').rows.length;
     const completedTasks = document.querySelectorAll('#tasksTableBody [name="completed"]:checked').length;
@@ -69,41 +74,19 @@ function updateProgress() {
 
     document.getElementById('progressBar').value = progress;
     document.getElementById('progressLabel').textContent = `${progress.toFixed(2)}%`;
-
-    // Guardar tareas localmente después de la actualización del progreso
-    saveTasks();
 }
 
-function saveTasks() {
-    const tasks = Array.from(document.getElementById("tasksTableBody").rows).map(
-        (row) => {
-            const task = {};
-            Array.from(row.cells).forEach((cell, index) => {
-                task[Object.keys(task)[index]] = cell.textContent;
-            });
-            return task;
-        }
-    );
-
-    // Guardar tareas en almacenamiento local
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    console.log('Tareas guardadas correctamente.');
+function saveTask(tarea) {
+    // Guardar la tarea en el gestor
+    gestorTareas.agregar(tarea);
 }
 
 function loadTasks() {
-    const storedTasks = localStorage.getItem('tasks');
+    const storedTasks = gestorTareas.consultarTodos();
 
-    if (storedTasks) {
-        try {
-            const tasks = JSON.parse(storedTasks);
+    // Agregar tareas guardadas a la tabla
+    storedTasks.forEach((tarea) => appendTaskToTable(tarea));
 
-            // Agregar tareas guardadas a la tabla
-            tasks.forEach((task) => appendTaskToTable(task));
-
-            // Actualizar el progreso
-            updateProgress();
-        } catch (error) {
-            console.error('Error al parsear tareas desde el almacenamiento local:', error);
-        }
-    }
+    // Actualizar el progreso
+    updateProgress();
 }

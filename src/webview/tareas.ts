@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
 
-
 export class Tarea {
 	public static currentPanel: Tarea | undefined;
 
@@ -35,7 +34,7 @@ export class Tarea {
 				// And restrict the webview to only loading content from our extension's `media` directory.
 				localResourceRoots: [
 					vscode.Uri.joinPath(extensionUri, "src/media"),
-					vscode.Uri.joinPath(extensionUri, "src/webview")
+					vscode.Uri.joinPath(extensionUri, "src/webview"),
 				],
 			}
 		);
@@ -111,7 +110,6 @@ export class Tarea {
 					vscode.window.showErrorMessage(data.value);
 					break;
 				}
-
 			}
 		});
 	}
@@ -142,7 +140,6 @@ export class Tarea {
 		// Use a nonce to only allow specific scripts to be run
 		const nonce = getNonce();
 
-
 		return `<!DOCTYPE html>
 		<html lang="en">
 		<head>
@@ -154,50 +151,47 @@ export class Tarea {
             <link rel="stylesheet" href="${stylesSkinUri}">
 		</head>
     <body>
-		<h1>${nameProject}</h1>
-		<div id="app" class=""></div>
+		<h1>Actividades</h1>
 		<!-- Tabla de tareas -->
 		<h2>Lista de Tareas</h2>
-		<table>
+		<table id="tasksTable">
 			<thead>
 				<tr>
 					<th>Actividad</th>
 					<th>Fecha</th>
 					<th>Detalles</th>
-					<th>Encargado</th>
+					<th>Asignado</th>
 					<th>Completado</th>
 				</tr>
 			</thead>
-		<tbody id="tasksTableBody"></tbody>
-		
-
+			<tbody id="tasksTableBody"></tbody>
 		</table>
 
 		<!-- Formulario para agregar/modificar tareas -->
-		<h2>Agregar Nueva Tarea</h2>
+		<h2>Añadir actividad</h2>
 		<form id="taskForm">
 			<label for="activity">Actividad:</label>
-			<input type="text" id="activity" name="activity" required>
+			<input type="text" id="activity" required>
 			
 			<label for="date">Fecha:</label>
-			<input type="date" id="date" name="date" required>
-			
+			<input type="date" id="date" required>
+
 			<label for="details">Detalles:</label>
-			<textarea id="details" name="details" required></textarea>
-			
-			<label for="assignee">Encargado:</label>
-			<input type="text" id="assignee" name="assignee" required>
+			<input type="text" id="details" required>
+
+			<label for="assignee">Asignado:</label>
+			<input type="text" id="assignee" required>
 			
 			<label for="completed">Completado:</label>
-			<input type="checkbox" id="completed" name="completed">
+			<input type="checkbox" id="completed">
 			
-			<button type="button" onclick="addTask()">Agregar Tarea</button>
+			<button type="submit">Add Task</button>
 		</form>
 
 		<!-- Barra de progreso -->
-		<h2>Progreso</h2>
-		<div id="progressBarContainer">
-			<progress id="progressBar" max="100" value="0"></progress>
+		<div>
+			<label for="progressBar">Progress:</label>
+			<progress id="progressBar" value="0" max="100"></progress>
 			<span id="progressLabel">0%</span>
 			<!-- Agrega este botón al final de tu cuerpo HTML -->
 			<button id="updateProgressButton">Actualizar Progreso</button>

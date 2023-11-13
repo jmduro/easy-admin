@@ -2,9 +2,10 @@ import * as vscode from 'vscode';
 import { TareaProvider } from './treeview/tarea';
 
 import { Tarea } from './webview/tareas';
-
+import { GestorTareas } from './modelo/gestor';
 
 export function activate(context: vscode.ExtensionContext) {
+	const gestorTareas = new GestorTareas();
 	const tareaProvider = new TareaProvider();
 	vscode.window.createTreeView('tareas', { treeDataProvider: tareaProvider });
 

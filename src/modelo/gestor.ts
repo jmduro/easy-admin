@@ -9,6 +9,8 @@ interface Gestor<T> {
 }
 
 export class GestorTareas implements Gestor<Tarea> {
+    
+    
     agregar(entidad: Tarea): void {
         throw new Error("Method not implemented.");
     }
