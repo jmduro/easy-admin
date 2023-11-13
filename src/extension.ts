@@ -1,11 +1,9 @@
 import * as vscode from 'vscode';
 import { TareaProvider } from './treeview/tarea';
 
-import { getWebviewContentTareas } from './webview/tareas';
-import { getWebviewContentColaboradores } from './webview/colaboradores';
-import { getWebviewContentCalendario } from './webview/calendario';
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+import { Tarea } from './webview/tareas';
+
+
 export function activate(context: vscode.ExtensionContext) {
 	const tareaProvider = new TareaProvider();
 	vscode.window.createTreeView('tareas', { treeDataProvider: tareaProvider });
@@ -39,17 +37,19 @@ export function activate(context: vscode.ExtensionContext) {
 	// 	}
 	// });
 	//context.subscriptions.push(disposable);
+	
 	//Tareas
 	context.subscriptions.push(
 		vscode.commands.registerCommand('easy-admin.tareas', () => {
-			const panel = vscode.window.createWebviewPanel(
+			Tarea.createOrShow(context.extensionUri);
+			/*const panel = vscode.window.createWebviewPanel(
 				'easy-admin',
 				'Easy Admin',
 				vscode.ViewColumn.One,
 				{}
 			);
 
-			panel.webview.html = getWebviewContentTareas();
+			panel.webview.html = getWebviewContentTareas(); */
 		})
 	);
 
@@ -63,7 +63,8 @@ export function activate(context: vscode.ExtensionContext) {
 				{}
 			);
 
-			panel.webview.html = getWebviewContentColaboradores();
+			//panel.webview.html = getWebviewContentColaboradores();
+			//Colaboradores.createOrShow(context.extensionUri);
 		})
 	);
 
@@ -76,7 +77,8 @@ export function activate(context: vscode.ExtensionContext) {
 				{}
 			);
 
-			panel.webview.html = getWebviewContentCalendario();
+			//panel.webview.html = getWebviewContentCalendario();
+			//Calendario.createOrShow(context.extensionUri);
 		})
 	);
 }
