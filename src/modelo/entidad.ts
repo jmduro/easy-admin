@@ -79,6 +79,7 @@ export class Tarea {
 
     set fechaLimite(fechaLimite: string) {
         // Comprobación de fecha
+        return;
     }
 
     get encargado(): string | undefined {
