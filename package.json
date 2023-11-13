@@ -10,7 +10,6 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:easy-admin.abrirPanel"
   ],
   "main": "./out/extension.js",
   "contributes": {
