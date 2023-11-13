@@ -42,6 +42,18 @@ export class Encargado {
         this._puesto = puesto;
     }
 
+    public equals(obj: Object): boolean {
+        if (this === obj) { return true; }
+        if (obj === null) { return false; }
+        if (typeof this !== typeof obj) { return false; }
+        let encargado: Encargado = obj as Encargado;
+        return (
+            this.nombre === encargado.nombre &&
+            this.correo === encargado.correo &&
+            this.puesto === encargado.puesto
+        );
+    }
+
     private isZeroLength(s: string): boolean {
         return s.length < 1;
     }
@@ -82,8 +94,11 @@ export class Tarea {
         return;
     }
 
-    get encargado(): string | undefined {
-        return this._encargado?.nombre;
+    get encargado(): string {
+        if (this._encargado) {
+            return this._encargado.nombre;
+        }
+        return '';
     }
 
     set encargado(encargado: Encargado) {
@@ -102,6 +117,20 @@ export class Tarea {
 
     set completado(completado: boolean) {
         this._completado = completado;
+    }
+
+    public equals(obj: Object): boolean {
+        if (this === obj) { return true; }
+        if (obj === null) { return false; }
+        if (typeof this !== typeof obj) { return false; }
+        let tarea: Tarea = obj as Tarea;
+        return (
+            this.nombre === tarea.nombre &&
+            this.fechaLimite === tarea.fechaLimite &&
+            this.encargado === tarea.encargado &&
+            this.descripcion === tarea.descripcion &&
+            this.completado === tarea.completado
+        );
     }
 
     private isZeroLength(s: string): boolean {
