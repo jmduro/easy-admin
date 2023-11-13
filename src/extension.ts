@@ -2,9 +2,6 @@ import * as vscode from 'vscode';
 import { TareaProvider } from './treeview/tarea';
 
 import { Tarea } from './webview/tareas';
-import { getWebviewContentColaboradores } from './webview/colaboradores';
-import { getWebviewContentCalendario } from './webview/calendario';
-import { Example } from './webview/example';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -40,13 +37,6 @@ export function activate(context: vscode.ExtensionContext) {
 	// 	}
 	// });
 	//context.subscriptions.push(disposable);
-
-	//Example
-	context.subscriptions.push(
-		vscode.commands.registerCommand("easy-admin.example", () => {
-			Example.createOrShow(context.extensionUri);
-		})
-	);
 	
 	//Tareas
 	context.subscriptions.push(
@@ -73,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
 				{}
 			);
 
-			panel.webview.html = getWebviewContentColaboradores();
+			//panel.webview.html = getWebviewContentColaboradores();
 			//Colaboradores.createOrShow(context.extensionUri);
 		})
 	);
@@ -87,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
 				{}
 			);
 
-			panel.webview.html = getWebviewContentCalendario();
+			//panel.webview.html = getWebviewContentCalendario();
 			//Calendario.createOrShow(context.extensionUri);
 		})
 	);

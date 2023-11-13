@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
-import * as tareas from "./tareas.js";
 
 
 export class Tarea {
@@ -36,7 +35,7 @@ export class Tarea {
 				// And restrict the webview to only loading content from our extension's `media` directory.
 				localResourceRoots: [
 					vscode.Uri.joinPath(extensionUri, "src/media"),
-					
+					vscode.Uri.joinPath(extensionUri, "src/webview")
 				],
 			}
 		);
@@ -152,62 +151,11 @@ export class Tarea {
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<link href="${stylesResetUri}" rel="stylesheet">
 			<link href="${stylesMainUri}" rel="stylesheet">
-            <link rel="stylesheet" href="tareas.css">
-        <script nonce="${nonce}"></script>
+            <link rel="stylesheet" href="${stylesSkinUri}">
 		</head>
     <body>
-	<script src="${scriptTarea}"></script>
-	<div id="app" class=""></div>
 		<h1>${nameProject}</h1>
-
-        <button type="button" onClick="initializeApp()">Iniciar</button>
-
-		<!-- Formulario para agregar/modificar tareas -->
-		<h2>Agregar Nueva Tarea</h2>
-		<form id="taskForm">
-			<label for="activity">Actividad:</label>
-			<input type="text" id="activity" name="activity" required>
-
-			<label for="date">Fecha:</label>
-			<input type="date" id="date" name="date" required>
-
-			<label for="details">Detalles:</label>
-			<textarea id="details" name="details" required></textarea>
-
-			<label for="assignee">Encargado:</label>
-			<input type="text" id="assignee" name="assignee" required>
-
-			<label for="completed">Completado:</label>
-			<input type="checkbox" id="completed" name="completed">
-
-			<button type="button" onclick="addTask()">Agregar Tarea</button>
-		</form>
-		
-		
-		<!--<form class="task-form" id="taskForm">
-			<label for="taskName">Nombre de la actividad</label>
-			<input type="text" id="taskName" name="taskName" required>
-
-			<label for="taskDate">Fecha:</label>
-			<input type="date" id="taskDate" name="taskDate">
-
-			<label for="taskDescription">Detalles:</label>
-			<textarea id="taskDescription" name="taskDescription"></textarea>
-
-			<label for="taskPriority">Encargado:</label>
-			<select id="taskPriority" name="taskPriority">
-				<option value="alta">Jorge</option>
-				<option value="media">Olsend</option>
-				<option value="baja">Alejo</option>
-				<option value="baja">Mel</option>
-			</select>
-	
-			<input type="checkbox" id="taskCompleted" name="taskCompleted">
-			<label for="taskCompleted">Completado</label>
-	
-			<button type="button" onclick="addOrUpdateTask()">Agregar/Modificar Tarea</button>
-		</form>  -->
-
+		<div id="app" class=""></div>
 		<!-- Tabla de tareas -->
 		<h2>Lista de Tareas</h2>
 		<table>
@@ -220,25 +168,44 @@ export class Tarea {
 					<th>Completado</th>
 				</tr>
 			</thead>
-			<tbody id="tasksTableBody"></tbody>
+		<tbody id="tasksTableBody"></tbody>
+		
+
 		</table>
-				<!-- <tbody id="taskList">Aquí se insertarán dinámicamente las filas de la tabla -->
+
+		<!-- Formulario para agregar/modificar tareas -->
+		<h2>Agregar Nueva Tarea</h2>
+		<form id="taskForm">
+			<label for="activity">Actividad:</label>
+			<input type="text" id="activity" name="activity" required>
+			
+			<label for="date">Fecha:</label>
+			<input type="date" id="date" name="date" required>
+			
+			<label for="details">Detalles:</label>
+			<textarea id="details" name="details" required></textarea>
+			
+			<label for="assignee">Encargado:</label>
+			<input type="text" id="assignee" name="assignee" required>
+			
+			<label for="completed">Completado:</label>
+			<input type="checkbox" id="completed" name="completed">
+			
+			<button type="button" onclick="addTask()">Agregar Tarea</button>
+		</form>
 
 		<!-- Barra de progreso -->
-
 		<h2>Progreso</h2>
 		<div id="progressBarContainer">
 			<progress id="progressBar" max="100" value="0"></progress>
 			<span id="progressLabel">0%</span>
+			<!-- Agrega este botón al final de tu cuerpo HTML -->
+			<button id="updateProgressButton">Actualizar Progreso</button>
 		</div>
 
-		<!-- <div class="progress-bar">
-			<div class="progress" id="progress"></div>
-			<div class="progress-text" id="progressText">0%</div>
-		</div> -->
-		<script src="tareas.js"></script>
+		<script src="${scriptTarea}"></script>
 	</body>
-	<script src="${scriptUri}" nonce="${nonce}"></script>
+	<script src="${scriptUri}" ></script>
 	</html>`;
 	}
 }
