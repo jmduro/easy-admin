@@ -11,10 +11,10 @@ interface Gestor<T> {
 export class GestorTareas implements Gestor<Tarea> {
     private static tareas: Tarea[] = [];
 
-    constructor(
-        tareas?: Tarea[]
-    ) {
-        if (tareas) { GestorTareas.tareas = tareas; }
+    constructor(tareas?: Tarea[]) {
+        if (tareas) { 
+            GestorTareas.tareas = tareas;
+        }
     }
 
     agregar(entidad: Tarea): void {
@@ -38,6 +38,10 @@ export class GestorTareas implements Gestor<Tarea> {
 
     consultarTodos(): Tarea[] {
         return GestorTareas.tareas;
+    }
+
+    static obtenerTareas(): Tarea[] {
+        return this.tareas;
     }
 }
 
