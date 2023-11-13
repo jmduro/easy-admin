@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
 
-export class Tarea {
-	public static currentPanel: Tarea | undefined;
+export class Colaborador {
+	public static currentPanel: Colaborador | undefined;
 
 	public static readonly viewType = "swiper";
 
@@ -15,15 +15,15 @@ export class Tarea {
 			? vscode.window.activeTextEditor.viewColumn
 			: undefined;
 
-		if (Tarea.currentPanel) {
-			Tarea.currentPanel._panel.reveal(column);
-			Tarea.currentPanel._update();
+		if (Colaborador.currentPanel) {
+			Colaborador.currentPanel._panel.reveal(column);
+			Colaborador.currentPanel._update();
 			return;
 		}
 
 		const panel = vscode.window.createWebviewPanel(
-			Tarea.viewType,
-			"Tareas",
+			Colaborador.viewType,
+			"Colaboradores",
 			column || vscode.ViewColumn.One,
 			{
 				enableScripts: true,
@@ -34,16 +34,16 @@ export class Tarea {
 			}
 		);
 
-		Tarea.currentPanel = new Tarea(panel, extensionUri);
+		Colaborador.currentPanel = new Colaborador(panel, extensionUri);
 	}
 
 	public static kill() {
-		Tarea.currentPanel?.dispose();
-		Tarea.currentPanel = undefined;
+		Colaborador.currentPanel?.dispose();
+		Colaborador.currentPanel = undefined;
 	}
 
 	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-		Tarea.currentPanel = new Tarea(panel, extensionUri);
+		Colaborador.currentPanel = new Colaborador(panel, extensionUri);
 	}
 
 	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
@@ -56,7 +56,7 @@ export class Tarea {
 	}
 
 	public dispose() {
-		Tarea.currentPanel = undefined;
+		Colaborador.currentPanel = undefined;
 		this._panel.dispose();
 		while (this._disposables.length) {
 			const x = this._disposables.pop();
@@ -94,8 +94,8 @@ export class Tarea {
 		const scriptUri = webview.asWebviewUri(
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/main.js")
 		);
-		const scriptTarea = webview.asWebviewUri(
-			vscode.Uri.joinPath(this._extensionUri, "src", "webview/tareas.js")
+		const scriptColab = webview.asWebviewUri(
+			vscode.Uri.joinPath(this._extensionUri, "src", "webview/colaboradores.js")
 		);
 		const stylesResetUri = webview.asWebviewUri(
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/reset.css")
@@ -104,7 +104,7 @@ export class Tarea {
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/vscode.css")
 		);
 		const stylesSkinUri = webview.asWebviewUri(
-			vscode.Uri.joinPath(this._extensionUri, "src", "webview/tareas.css")
+			vscode.Uri.joinPath(this._extensionUri, "src", "webview/colaboradores.css")
 		);
 
 		const nonce = getNonce();
@@ -116,56 +116,45 @@ export class Tarea {
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<link href="${stylesResetUri}" rel="stylesheet">
 			<link href="${stylesMainUri}" rel="stylesheet">
-            <link rel="stylesheet" href="${stylesSkinUri}">
+            <link href="${stylesSkinUri}" rel="stylesheet">
 		</head>
     <body>
-		<h1>Actividades</h1>
+		<h1>Colaboradores</h1>
 		<!-- Tabla de tareas -->
-		<h2>Lista de Tareas</h2>
-		<table id="tasksTable">
-			<thead>
-				<tr>
-					<th>Actividad</th>
-					<th>Fecha</th>
-					<th>Detalles</th>
-					<th>Asignado</th>
-					<th>Completado</th>
-				</tr>
-			</thead>
-			<tbody id="tasksTableBody"></tbody>
+		<h2>Lista de Colaboradores</h2>
+		<table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Puesto</th>
+            </tr>
+        </thead>
+        <tbody id="colaboradoresTableBody">
+            <!-- Filas de la tabla se agregarán dinámicamente con JavaScript -->
+        </tbody>
 		</table>
 
 		<!-- Formulario para agregar/modificar tareas -->
-		<h2>Añadir actividad</h2>
-		<form id="taskForm">
-			<label for="activity">Actividad:</label>
-			<input type="text" id="activity" required>
-			
-			<label for="date">Fecha:</label>
-			<input type="date" id="date" required>
-
-			<label for="details">Detalles:</label>
-			<input type="text" id="details" required>
-
-			<label for="assignee">Asignado:</label>
-			<input type="text" id="assignee" required>
-			
-			<label for="completed">Completado:</label>
-			<input type="checkbox" id="completed">
-			
-			<button type="submit">Add Task</button>
+		<h2>Añadir colaborador</h2>
+		<form id="colaboradorForm">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required>
+        
+        <label for="correo">Correo:</label>
+        <input type="text" id="correo" required>
+        
+        <label for="puesto">Puesto:</label>
+        <input type="text" id="puesto" required>
+        
+        <div class="button-container">
+            <button class="button" type="button" onclick="agregarColaborador()">Agregar</button>
+            <button class="button cancel" type="button" onclick="cerrarWebview()">Cancelar</button>
+        </div>
 		</form>
+		
 
-		<!-- Barra de progreso -->
-		<div>
-			<label for="progressBar">Progress:</label>
-			<progress id="progressBar" value="0" max="100"></progress>
-			<span id="progressLabel">0%</span>
-			<!-- Agrega este botón al final de tu cuerpo HTML -->
-			<button id="updateProgressButton">Actualizar Progreso</button>
-		</div>
-
-		<script src="${scriptTarea}"></script>
+		<script src="${scriptColab}"></script>
 	</body>
 	<script src="${scriptUri}" ></script>
 	</html>`;
