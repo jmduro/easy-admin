@@ -1,4 +1,5 @@
 import { Tarea, Colaborador } from "./entidad";
+import { window } from 'vscode';
 
 interface Gestor<T> {
     agregar(entidad: T): void;
@@ -15,6 +16,7 @@ export class GestorTareas implements Gestor<Tarea> {
     agregar(entidad: Tarea): void {
         let tarea = this.consultarUno(entidad);
         if (!tarea) {
+            this.notificarEvento('Tarea creada', `Se ha creado la tarea: ${entidad.nombre}`);
             GestorTareas.tareas.push(entidad);
         }
     }
@@ -29,6 +31,7 @@ export class GestorTareas implements Gestor<Tarea> {
     eliminar(entidad: Tarea): void {
         let tarea = this.consultarUno(entidad);
         if (tarea) {
+            this.notificarEvento('Tarea eliminada', `Se ha eliminado la tarea: ${entidad.nombre}`);
             GestorTareas.tareas.splice(GestorTareas.tareas.indexOf(tarea), 1);
         }
     }
@@ -43,6 +46,29 @@ export class GestorTareas implements Gestor<Tarea> {
 
     consultarTodos(): Tarea[] {
         return GestorTareas.tareas;
+    }
+
+    private notificarEvento(titulo: string, mensaje: string) {
+        window.showInformationMessage(mensaje, { title: titulo });
+    }
+
+    verificarFechas() {
+        const hoy = new Date();
+
+        for (const tarea of GestorTareas.tareas) {
+            const fechaTarea = new Date(tarea.fechaLimite);
+            if (this.sonFechasIguales(hoy, fechaTarea)) {
+                this.notificarEvento('Recordatorio de tarea', `La tarea '${tarea.nombre}' se entrega hoy.`);
+            }
+        }
+    }
+
+    private sonFechasIguales(fecha1: Date, fecha2: Date): boolean {
+        return (
+            fecha1.getFullYear() === fecha2.getFullYear() &&
+            fecha1.getMonth() === fecha2.getMonth() &&
+            fecha1.getDate() === fecha2.getDate()
+        );
     }
 }
 
