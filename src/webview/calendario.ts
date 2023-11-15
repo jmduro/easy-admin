@@ -23,7 +23,7 @@ export class Calendario {
 
 		const panel = vscode.window.createWebviewPanel(
 			Calendario.viewType,
-			"Colaboradores",
+			"Calendario",
 			column || vscode.ViewColumn.One,
 			{
 				enableScripts: true,
@@ -95,7 +95,7 @@ export class Calendario {
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/main.js")
 		);
 		const scriptCalen = webview.asWebviewUri(
-			vscode.Uri.joinPath(this._extensionUri, "src", "webview/calendario.js")
+			vscode.Uri.joinPath(this._extensionUri, "src", "webview/calendarioVista.ts")
 		);
 		const stylesResetUri = webview.asWebviewUri(
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/reset.css")
