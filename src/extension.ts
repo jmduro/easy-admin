@@ -1,11 +1,7 @@
 import * as vscode from 'vscode';
 import { Controller } from './controller/controller';
-import { TareaProvider } from './view/treeview';
 import { TareaVista } from './webview/tareas';
 import { ColaboradorPanel } from './webview/colaboradores';
-import { Tarea, Colaborador } from './modelo/entidad';
-import { GestorColaboradores, GestorTareas } from './modelo/gestor';
-import { TareaTreeViewAdapter } from './modelo/adapter';
 import { CalendarioPanel } from './webview/calendario';
 
 export function activate(context: vscode.ExtensionContext) {
