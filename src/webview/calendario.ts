@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
 
-export class Calendario {
-	public static currentPanel: Calendario | undefined;
+export class CalendarioPanel {
+	public static currentPanel: CalendarioPanel | undefined;
 
 	public static readonly viewType = "swiper";
 
@@ -15,14 +15,14 @@ export class Calendario {
 			? vscode.window.activeTextEditor.viewColumn
 			: undefined;
 
-		if (Calendario.currentPanel) {
-			Calendario.currentPanel._panel.reveal(column);
-			Calendario.currentPanel._update();
+		if (CalendarioPanel.currentPanel) {
+			CalendarioPanel.currentPanel._panel.reveal(column);
+			CalendarioPanel.currentPanel._update();
 			return;
 		}
 
 		const panel = vscode.window.createWebviewPanel(
-			Calendario.viewType,
+			CalendarioPanel.viewType,
 			"Calendario",
 			column || vscode.ViewColumn.One,
 			{
@@ -34,16 +34,16 @@ export class Calendario {
 			}
 		);
 
-		Calendario.currentPanel = new Calendario(panel, extensionUri);
+		CalendarioPanel.currentPanel = new CalendarioPanel(panel, extensionUri);
 	}
 
 	public static kill() {
-		Calendario.currentPanel?.dispose();
-		Calendario.currentPanel = undefined;
+		CalendarioPanel.currentPanel?.dispose();
+		CalendarioPanel.currentPanel = undefined;
 	}
 
 	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-		Calendario.currentPanel = new Calendario(panel, extensionUri);
+		CalendarioPanel.currentPanel = new CalendarioPanel(panel, extensionUri);
 	}
 
 	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
@@ -56,7 +56,7 @@ export class Calendario {
 	}
 
 	public dispose() {
-		Calendario.currentPanel = undefined;
+		CalendarioPanel.currentPanel = undefined;
 		this._panel.dispose();
 		while (this._disposables.length) {
 			const x = this._disposables.pop();
@@ -117,7 +117,7 @@ export class Calendario {
 			<link href="${stylesResetUri}" rel="stylesheet">
 			<link href="${stylesMainUri}" rel="stylesheet">
             <link href="${stylesSkinUri}" rel="stylesheet">
-            link rel="stylesheet" href="https://unpkg.com/@fullcalendar/core/main.css" />
+            <link rel="stylesheet" href="https://unpkg.com/@fullcalendar/core/main.css" />
             <link rel="stylesheet" href="https://unpkg.com/@fullcalendar/daygrid/main.css" />
 		</head>
     <body>

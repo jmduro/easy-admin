@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
 
-export class Colaborador {
-	public static currentPanel: Colaborador | undefined;
+export class ColaboradorPanel {
+	public static currentPanel: ColaboradorPanel | undefined;
 
 	public static readonly viewType = "swiper";
 
@@ -15,14 +15,14 @@ export class Colaborador {
 			? vscode.window.activeTextEditor.viewColumn
 			: undefined;
 
-		if (Colaborador.currentPanel) {
-			Colaborador.currentPanel._panel.reveal(column);
-			Colaborador.currentPanel._update();
+		if (ColaboradorPanel.currentPanel) {
+			ColaboradorPanel.currentPanel._panel.reveal(column);
+			ColaboradorPanel.currentPanel._update();
 			return;
 		}
 
 		const panel = vscode.window.createWebviewPanel(
-			Colaborador.viewType,
+			ColaboradorPanel.viewType,
 			"Colaboradores",
 			column || vscode.ViewColumn.One,
 			{
@@ -34,16 +34,16 @@ export class Colaborador {
 			}
 		);
 
-		Colaborador.currentPanel = new Colaborador(panel, extensionUri);
+		ColaboradorPanel.currentPanel = new ColaboradorPanel(panel, extensionUri);
 	}
 
 	public static kill() {
-		Colaborador.currentPanel?.dispose();
-		Colaborador.currentPanel = undefined;
+		ColaboradorPanel.currentPanel?.dispose();
+		ColaboradorPanel.currentPanel = undefined;
 	}
 
 	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-		Colaborador.currentPanel = new Colaborador(panel, extensionUri);
+		ColaboradorPanel.currentPanel = new ColaboradorPanel(panel, extensionUri);
 	}
 
 	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
@@ -56,7 +56,7 @@ export class Colaborador {
 	}
 
 	public dispose() {
-		Colaborador.currentPanel = undefined;
+		ColaboradorPanel.currentPanel = undefined;
 		this._panel.dispose();
 		while (this._disposables.length) {
 			const x = this._disposables.pop();

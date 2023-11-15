@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
 
-export class Tarea {
-	public static currentPanel: Tarea | undefined;
+export class TareaVista {
+	public static currentPanel: TareaVista | undefined;
 
 	public static readonly viewType = "swiper";
 
@@ -15,14 +15,14 @@ export class Tarea {
 			? vscode.window.activeTextEditor.viewColumn
 			: undefined;
 
-		if (Tarea.currentPanel) {
-			Tarea.currentPanel._panel.reveal(column);
-			Tarea.currentPanel._update();
+		if (TareaVista.currentPanel) {
+			TareaVista.currentPanel._panel.reveal(column);
+			TareaVista.currentPanel._update();
 			return;
 		}
 
 		const panel = vscode.window.createWebviewPanel(
-			Tarea.viewType,
+			TareaVista.viewType,
 			"Tareas",
 			column || vscode.ViewColumn.One,
 			{
@@ -34,16 +34,16 @@ export class Tarea {
 			}
 		);
 
-		Tarea.currentPanel = new Tarea(panel, extensionUri);
+		TareaVista.currentPanel = new TareaVista(panel, extensionUri);
 	}
 
 	public static kill() {
-		Tarea.currentPanel?.dispose();
-		Tarea.currentPanel = undefined;
+		TareaVista.currentPanel?.dispose();
+		TareaVista.currentPanel = undefined;
 	}
 
 	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-		Tarea.currentPanel = new Tarea(panel, extensionUri);
+		TareaVista.currentPanel = new TareaVista(panel, extensionUri);
 	}
 
 	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
@@ -56,7 +56,7 @@ export class Tarea {
 	}
 
 	public dispose() {
-		Tarea.currentPanel = undefined;
+		TareaVista.currentPanel = undefined;
 		this._panel.dispose();
 		while (this._disposables.length) {
 			const x = this._disposables.pop();

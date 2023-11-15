@@ -1,5 +1,12 @@
 import * as vscode from 'vscode';
 import { Controller } from './controller/controller';
+import { TareaProvider } from './view/treeview';
+import { TareaVista } from './webview/tareas';
+import { ColaboradorPanel } from './webview/colaboradores';
+import { Tarea, Colaborador } from './modelo/entidad';
+import { GestorColaboradores, GestorTareas } from './modelo/gestor';
+import { TareaTreeViewAdapter } from './modelo/adapter';
+import { CalendarioPanel } from './webview/calendario';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -12,48 +19,24 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('easy-admin.eliminarColaborador', (nodo) => controller.eliminarColaborador(nodo));
 
 	// Tareas
-	// context.subscriptions.push(
-	// 	vscode.commands.registerCommand('easy-admin.tareas', () => {
-	// 		Tarea.createOrShow(context.extensionUri);
-	// 		/*const panel = vscode.window.createWebviewPanel(
-	// 			'easy-admin',
-	// 			'Easy Admin',
-	// 			vscode.ViewColumn.One,
-	// 			{}
-	// 		);
+	context.subscriptions.push(
+		vscode.commands.registerCommand('easy-admin.tareas', () => {
+			TareaVista.createOrShow(context.extensionUri);
+		})
+	);
 
-	// 		panel.webview.html = getWebviewContentTareas(); */
-	// 	})
-	// );
+	//Colaboradores
+	context.subscriptions.push(
+		vscode.commands.registerCommand('easy-admin.colaboradores', () => {
+			ColaboradorPanel.createOrShow(context.extensionUri);
+		})
+	);
 
-	// //Colaboradores
-	// context.subscriptions.push(
-	// 	vscode.commands.registerCommand('easy-admin.colaboradores', () => {
-	// 		const panel = vscode.window.createWebviewPanel(
-	// 			'easy-admin',
-	// 			'Easy Admin',
-	// 			vscode.ViewColumn.One,
-	// 			{}
-	// 		);
-
-	// 		//panel.webview.html = getWebviewContentColaboradores();
-	// 		//Colaboradores.createOrShow(context.extensionUri);
-	// 	})
-	// );
-
-	// context.subscriptions.push(
-	// 	vscode.commands.registerCommand('easy-admin.calendario', () => {
-	// 		const panel = vscode.window.createWebviewPanel(
-	// 			'easy-admin',
-	// 			'Easy Admin',
-	// 			vscode.ViewColumn.One,
-	// 			{}
-	// 		);
-
-	// 		//panel.webview.html = getWebviewContentCalendario();
-	// 		//Calendario.createOrShow(context.extensionUri);
-	// 	})
-	// );
+	context.subscriptions.push(
+		vscode.commands.registerCommand('easy-admin.calendario', () => {
+			CalendarioPanel.createOrShow(context.extensionUri);
+		})
+	);
 }
 
 // This method is called when your extension is deactivated
