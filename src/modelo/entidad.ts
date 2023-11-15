@@ -1,12 +1,16 @@
 export class Colaborador {
+
+    public id: bigint;
     private _nombre: string;
     private _correo: string;
     private _puesto: string;
 
     constructor() {
+        this.id = 0n;
         this._nombre = '';
         this._correo = '';
         this._puesto = '';
+
     }
 
     get nombre(): string {
@@ -47,26 +51,30 @@ export class Colaborador {
         if (obj === null) { return false; }
         if (typeof this !== typeof obj) { return false; }
         let encargado: Colaborador = obj as Colaborador;
-        let nombre: RegExp = new RegExp(`.*${encargado.nombre}.*`);
-        let correo: RegExp = new RegExp(`.*${encargado.correo}.*`);
-        let puesto: RegExp = new RegExp(`.*${encargado.puesto}.*`);
-        return(
+        let id = new RegExp(`.*${encargado.id}}.*`);
+        let nombre = new RegExp(`.*${encargado.nombre}.*`);
+        let correo = new RegExp(`.*${encargado.correo}.*`);
+        let puesto = new RegExp(`.*${encargado.puesto}.*`);
+        return (
+            id.test(this.id.toString()) &&
             nombre.test(this.nombre) &&
             correo.test(this.correo) &&
             puesto.test(this.puesto)
         );
     }
 
-    public equals(obj: Object): boolean {
+    public equals(obj?: Object): boolean {
+        if (obj === undefined) { return false; }
         if (this === obj) { return true; }
-        if (obj === null) { return false; }
         if (typeof this !== typeof obj) { return false; }
         let encargado: Colaborador = obj as Colaborador;
         return (
-            this.nombre === encargado.nombre &&
-            this.correo === encargado.correo &&
-            this.puesto === encargado.puesto
+            this.nombre === encargado.nombre
         );
+    }
+
+    public toString(): string {
+        return this.nombre;
     }
 
     private isZeroLength(s: string): boolean {
@@ -75,6 +83,8 @@ export class Colaborador {
 }
 
 export class Tarea {
+
+    public id: bigint;
     private _nombre: string;
     private _fechaLimite: Date;
     private _encargado?: Colaborador;
@@ -82,6 +92,7 @@ export class Tarea {
     private _completado: boolean;
 
     constructor() {
+        this.id = 0n;
         this._nombre = '';
         this._fechaLimite = new Date();
         this._encargado = undefined;
@@ -139,11 +150,13 @@ export class Tarea {
         if (obj === null) { return false; }
         if (typeof this !== typeof obj) { return false; }
         let tarea: Tarea = obj as Tarea;
-        let nombre: RegExp = new RegExp(`.*${tarea.nombre}.*`);
-        let fechaLimite: RegExp = new RegExp(`${tarea.fechaLimite}`);
-        let encargado: RegExp = new RegExp(`${tarea.encargado}`);
-        let descripcion: RegExp = new RegExp(`${tarea.descripcion}`);
-        return(
+        let id = new RegExp(`.*${tarea.id}.*`);
+        let nombre = new RegExp(`.*${tarea.nombre}.*`);
+        let fechaLimite = new RegExp(`${tarea.fechaLimite}`);
+        let encargado = new RegExp(`${tarea.encargado}`);
+        let descripcion = new RegExp(`${tarea.descripcion}`);
+        return (
+            id.test(this.id.toString()) &&
             nombre.test(this.nombre) &&
             fechaLimite.test(this.fechaLimite) &&
             encargado.test(this.encargado) &&
@@ -152,9 +165,9 @@ export class Tarea {
         );
     }
 
-    public equals(obj: Object): boolean {
+    public equals(obj?: Object): boolean {
+        if (obj === undefined) { return false; }
         if (this === obj) { return true; }
-        if (obj === null) { return false; }
         if (typeof this !== typeof obj) { return false; }
         let tarea: Tarea = obj as Tarea;
         return (

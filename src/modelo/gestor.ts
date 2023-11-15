@@ -2,36 +2,40 @@ import { Tarea, Colaborador } from "./entidad";
 import { window } from 'vscode';
 
 interface Gestor<T> {
+
     agregar(entidad: T): void;
-    modificar(entidadActual: T, entidadNueva: T): void;
-    eliminar(entidad: T): void;
+    modificar(id: bigint, entidad: T): void;
+    eliminar(id: bigint): void;
     buscar(entidad: T): T[] | undefined;
-    consultarUno(entidad: T): T | undefined;
+    consultarUno(id: bigint): T | undefined;
     consultarTodos(): T[];
 }
 
 export class GestorTareas implements Gestor<Tarea> {
+
+    private static id: bigint = 1n;
     private static tareas: Tarea[] = [];
 
     agregar(entidad: Tarea): void {
-        let tarea = this.consultarUno(entidad);
-        if (!tarea) {
-            this.notificarEvento('Tarea creada', `Se ha creado la tarea: ${entidad.nombre}`);
-            GestorTareas.tareas.push(entidad);
+        let tarea = this.consultarUno(entidad.id);
+        if (tarea || entidad.equals(tarea)) { return; }
+        entidad.id = GestorTareas.id;
+        GestorTareas.tareas.push(entidad);
+        this.notificarEvento('Tarea creada', `Se ha creado la tarea: ${entidad.nombre}`);
+        GestorTareas.id++;
+    }
+
+    modificar(id: bigint, entidad: Tarea): void {
+        let tarea = this.consultarUno(id);
+        if (tarea) {
+            tarea = entidad;
         }
     }
 
-    modificar(entidadActual: Tarea, entidadNueva: Tarea): void {
-        let tarea = this.consultarUno(entidadActual);
+    eliminar(id: bigint): void {
+        let tarea = this.consultarUno(id);
         if (tarea) {
-            tarea = entidadNueva;
-        }
-    }
-
-    eliminar(entidad: Tarea): void {
-        let tarea = this.consultarUno(entidad);
-        if (tarea) {
-            this.notificarEvento('Tarea eliminada', `Se ha eliminado la tarea: ${entidad.nombre}`);
+            this.notificarEvento('Tarea eliminada', `Se ha eliminado la tarea: ${tarea.nombre}`);
             GestorTareas.tareas.splice(GestorTareas.tareas.indexOf(tarea), 1);
         }
     }
@@ -40,8 +44,9 @@ export class GestorTareas implements Gestor<Tarea> {
         return GestorTareas.tareas.filter(tarea => tarea.like(entidad));
     }
 
-    consultarUno(entidad: Tarea): Tarea | undefined {
-        return GestorTareas.tareas.find(tarea => tarea.equals(entidad));
+    consultarUno(id: bigint): Tarea | undefined {
+        if (id <= 0) { return undefined; }
+        return GestorTareas.tareas.find(tarea => tarea.id === id);
     }
 
     consultarTodos(): Tarea[] {
@@ -73,24 +78,27 @@ export class GestorTareas implements Gestor<Tarea> {
 }
 
 export class GestorColaboradores implements Gestor<Colaborador> {
+
+    private static id: bigint = 1n;
     private static colaboradores: Colaborador[] = [];
 
     agregar(entidad: Colaborador): void {
-        let colaborador = this.consultarUno(entidad);
-        if (!colaborador) {
-            GestorColaboradores.colaboradores.push(entidad);
-        }
+        let colaborador = this.consultarUno(entidad.id);
+        if (colaborador || entidad.equals(colaborador)) { return; }
+        entidad.id = GestorColaboradores.id;
+        GestorColaboradores.colaboradores.push(entidad);
+        GestorColaboradores.id++;
     }
 
-    modificar(entidadActual: Colaborador, entidadNueva: Colaborador): void {
-        let colaborador = this.consultarUno(entidadActual);
+    modificar(id: bigint, entidad: Colaborador): void {
+        let colaborador = this.consultarUno(id);
         if (colaborador) {
-            colaborador = entidadNueva;
+            colaborador = entidad;
         }
     }
 
-    eliminar(entidad: Colaborador): void {
-        let colaborador = this.consultarUno(entidad);
+    eliminar(id: bigint): void {
+        let colaborador = this.consultarUno(id);
         if (colaborador) {
             GestorColaboradores.colaboradores.splice(GestorColaboradores.colaboradores.indexOf(colaborador), 1);
         }
@@ -100,8 +108,9 @@ export class GestorColaboradores implements Gestor<Colaborador> {
         return GestorColaboradores.colaboradores.filter(colaborador => colaborador.like(entidad));
     }
 
-    consultarUno(entidad: Colaborador): Colaborador | undefined {
-        return GestorColaboradores.colaboradores.find(colaborador => colaborador.equals(entidad));
+    consultarUno(id: bigint): Colaborador | undefined {
+        if (id <= 0) { return undefined; }
+        return GestorColaboradores.colaboradores.find(colaborador => colaborador.id === id);
     }
 
     consultarTodos(): Colaborador[] {

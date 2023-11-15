@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { TareaTreeViewAdapter } from '../modelo/adapter';
-import { GestorTareas } from '../modelo/gestor';
+import { ColaboradorTreeViewAdapter, TareaTreeViewAdapter } from '../modelo/adapter';
+import { GestorColaboradores, GestorTareas } from '../modelo/gestor';
 
 export class TareaProvider implements vscode.TreeDataProvider<TareaTreeViewAdapter> {
 
@@ -76,5 +76,47 @@ export class TareaProvider implements vscode.TreeDataProvider<TareaTreeViewAdapt
     refresh(): void {
         this._onDidChangeTreeData.fire();
     }
+}
+
+export class ColaboradorProvider implements vscode.TreeDataProvider<ColaboradorTreeViewAdapter> {
+
+    constructor(
+        private gestor: GestorColaboradores
+    ) { }
+
+    getColaboradores(): ColaboradorTreeViewAdapter[] {
+        const arr: vscode.TreeItem[] = this.gestor.consultarTodos().map(colaborador => {
+            let item: ColaboradorTreeViewAdapter = new ColaboradorTreeViewAdapter(colaborador);
+            item.label = colaborador.nombre;
+            item.description = colaborador.puesto;
+            item.tooltip = colaborador.correo;
+            item.iconPath = new vscode.ThemeIcon('account');
+            item.contextValue = 'colaborador';
+            return item;
+        });
+        return arr;
+    }
+
+    getTreeItem(element: ColaboradorTreeViewAdapter): vscode.TreeItem {
+        return element;
+    }
+
+    getChildren(element?: ColaboradorTreeViewAdapter): vscode.ProviderResult<ColaboradorTreeViewAdapter[]> {
+        if (element) {
+            return Promise.resolve([]);
+        } else {
+            return Promise.resolve(this.getColaboradores());
+        }
+    }
+
+    /* Actualización en tiempo real */
+    private _onDidChangeTreeData: vscode.EventEmitter<ColaboradorTreeViewAdapter | undefined | null | void> = new vscode.EventEmitter<ColaboradorTreeViewAdapter | undefined | null | void>();
+    readonly onDidChangeTreeData: vscode.Event<ColaboradorTreeViewAdapter | undefined | null | void> = this._onDidChangeTreeData.event;
+
+    refresh(): void {
+        this._onDidChangeTreeData.fire();
+    }
+
+
 
 }

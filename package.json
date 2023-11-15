@@ -24,9 +24,14 @@
         "icon": "$(remove-close)"
       },
       {
-        "command": "easy-admin.altenarEstado",
+        "command": "easy-admin.cambiarEstado",
         "title": "Marcar tarea como completada",
         "icon": "$(check)"
+      },
+      {
+        "command": "easy-admin.agregarColaborador",
+        "title": "Agregar colaborador",
+        "icon": "$(add)"
       },
       {
         "command": "easy-admin.example",
@@ -55,6 +60,11 @@
           "command": "easy-admin.agregarTarea",
           "when": "view == tareas",
           "group": "navigation"
+        },
+        {
+          "command": "easy-admin.agregarColaborador",
+          "when": "view == colaboradores",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
@@ -64,7 +74,7 @@
           "group": "inline"
         },
         {
-          "command": "easy-admin.alternarEstado",
+          "command": "easy-admin.cambiarEstado",
           "when": "view == tareas && viewItem == tarea",
           "group": "inline"
         }
