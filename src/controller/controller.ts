@@ -3,32 +3,36 @@ import { Colaborador, Tarea } from '../modelo/entidad';
 import { GestorColaboradores, GestorTareas } from '../modelo/gestor';
 import { ColaboradorTreeViewAdapter, TareaTreeViewAdapter } from '../modelo/adapter';
 import { ColaboradorProvider, TareaProvider } from '../view/treeview';
+import { ColaboradorInputHandler, TareaInputHandler } from './inputHandler';
 
 export class Controller {
 
-    private gestorTareas;
-    private gestorColaboradores;
-
-    private tareaProvider;
-    private colaboradorProvider;
+    tareaController: TareaController;
+    colaboradorController: ColaboradorController;
 
     constructor() {
-        this.gestorTareas = new GestorTareas();
-        this.gestorColaboradores = new GestorColaboradores();
-        this.tareaProvider = new TareaProvider(this.gestorTareas);
-        this.colaboradorProvider = new ColaboradorProvider(this.gestorColaboradores);
+        const gestorTareas = new GestorTareas();
+        const tareaProvider = new TareaProvider(gestorTareas);
+        this.tareaController = new TareaController(gestorTareas, tareaProvider);
+        vscode.window.createTreeView('tareas', { treeDataProvider: tareaProvider });
+
+        const gestorColaboradores = new GestorColaboradores();
+        const colaboradorProvider = new ColaboradorProvider(gestorColaboradores);
+        this.colaboradorController = new ColaboradorController(gestorColaboradores, tareaProvider, colaboradorProvider);
+        vscode.window.createTreeView('colaboradores', { treeDataProvider: colaboradorProvider });
 
         this.loadValues();  // ! Borrar en producción
-        vscode.window.createTreeView('tareas', { treeDataProvider: this.tareaProvider });
-        vscode.window.createTreeView('colaboradores', { treeDataProvider: this.colaboradorProvider });
     }
 
     private loadValues() {
+        const gestorTareas = new GestorTareas();
+        const gestorColaboradores = new GestorColaboradores();
+
         let colaborador: Colaborador;
 
         colaborador = new Colaborador();
         colaborador.nombre = 'Alejo';
-        this.gestorColaboradores.agregar(colaborador);
+        gestorColaboradores.agregar(colaborador);
 
         let tarea: Tarea;
 
@@ -37,29 +41,31 @@ export class Controller {
         tarea.encargado = colaborador;
         tarea.descripcion = 'Ejemplo';
         tarea.completado = true;
-        this.gestorTareas.agregar(tarea);
+        gestorTareas.agregar(tarea);
 
         tarea = new Tarea();
         tarea.nombre = 'Tarea 2';
         tarea.encargado = colaborador;
         tarea.descripcion = 'Otro ejemplo';
-        this.gestorTareas.agregar(tarea);
+        gestorTareas.agregar(tarea);
     }
+}
+
+export class TareaController {
+
+    constructor(
+        private gestorTareas: GestorTareas,
+        private tareaProvider: TareaProvider
+    ) { }
 
     async agregarTarea() {
-        const nombre = await vscode.window.showInputBox({ prompt: 'Nombre de la tarea' });
+        const nombre = await TareaInputHandler.getNombreFromUsuario();
         if (!nombre || nombre === '') { return; }
-
-        const opcionesColaborador: Map<string, Colaborador> = new Map([['', new Colaborador()]]);
-        this.gestorColaboradores.consultarTodos().forEach(colaborador => opcionesColaborador.set(colaborador.nombre, colaborador));
-        const nombreColaborador = await vscode.window.showQuickPick(Array.from(opcionesColaborador.keys()), { placeHolder: 'Elige un colaborador (Deja en blanco para no seleccionar ninguno.)' });
+        const colaborador = await TareaInputHandler.getColaboradorFromUsuario();
 
         const tarea = new Tarea();
         tarea.nombre = nombre;
-        if (nombreColaborador && nombreColaborador !== '') {
-            let colaborador = opcionesColaborador.get(nombreColaborador);
-            if (colaborador) { tarea.encargado = colaborador; }
-        }
+        if (colaborador) { tarea.encargado = colaborador; }
 
         this.gestorTareas.agregar(tarea);
         this.tareaProvider.refresh();
@@ -67,8 +73,7 @@ export class Controller {
 
     async eliminarTarea(nodo?: TareaTreeViewAdapter) {
         if (nodo && nodo.tarea) {
-            const eliminar = await vscode.window.showQuickPick(['Sí', 'No'], { placeHolder: '¿Está seguro de querer eliminar esta tarea?' });
-            if (eliminar && eliminar === 'Sí') {
+            if (await TareaInputHandler.getRespuestaEliminarTareaFromUsuario()) {
                 this.gestorTareas.eliminar(nodo.tarea.id);
                 this.tareaProvider.refresh();
             }
@@ -77,35 +82,70 @@ export class Controller {
 
     cambiarEstado(nodo?: TareaTreeViewAdapter) {
         if (nodo && nodo.tarea) {
-            let nuevoEstado: boolean;
-            if (nodo.tarea.completado === 'Sí') {
-                nuevoEstado = false;
-            } else {
-                nuevoEstado = true;
-            }
-            nodo.tarea.completado = nuevoEstado;
+            nodo.tarea.completado = !nodo.tarea.completado;
             this.tareaProvider.refresh();
         }
     }
 
-    agregarColaborador() {
-        vscode.window.showInputBox({ prompt: 'Agregar un nuevo colaborador' }).then(nombre => {
-            if (nombre) {
-                let colaborador = new Colaborador();
-                colaborador.nombre = nombre;
-                this.gestorColaboradores.agregar(colaborador);
-                this.colaboradorProvider.refresh();
-            }
-        });
+    async editarEncargado(nodo?: TareaTreeViewAdapter) {
+        if (nodo && nodo.tarea) {
+            nodo.tarea.encargado = await TareaInputHandler.getColaboradorFromUsuario();
+            this.tareaProvider.refresh();
+        }
+    }
+
+    async editarDescripcion(nodo?: TareaTreeViewAdapter) {
+        if (nodo && nodo.tarea) {
+            nodo.tarea.descripcion = await TareaInputHandler.getDescripcionFromUsuario(nodo.tarea.descripcion);
+            this.tareaProvider.refresh();
+        }
+    }
+}
+
+export class ColaboradorController {
+
+    constructor(
+        private gestorColaboradores: GestorColaboradores,
+        private tareaProvider: TareaProvider,
+        private colaboradorProvider: ColaboradorProvider
+    ) { }
+
+    async agregarColaborador() {
+        const nombre = await ColaboradorInputHandler.getNombreFromUsuario();
+        if (!nombre || nombre === '') { return; }
+        const puesto = await ColaboradorInputHandler.getPuestoFromUsuario();
+        const correo = await ColaboradorInputHandler.getCorreoFromUsuario();
+
+        const colaborador = new Colaborador();
+        colaborador.nombre = nombre;
+        colaborador.puesto = puesto;
+        colaborador.correo = correo;
+
+        this.gestorColaboradores.agregar(colaborador);
+        this.colaboradorProvider.refresh();
     }
 
     async eliminarColaborador(nodo?: ColaboradorTreeViewAdapter) {
         if (nodo && nodo.colaborador) {
-            const eliminar = await vscode.window.showQuickPick(['Sí', 'No'], { placeHolder: '¿Está seguro de querer eliminar este colaborador?' });
-            if (eliminar && eliminar === 'Sí') {
+            if (await ColaboradorInputHandler.getRespuestaEliminarColaboradorFromUsuario()) {
                 this.gestorColaboradores.eliminar(nodo.colaborador.id);
+                this.tareaProvider.refresh();
                 this.colaboradorProvider.refresh();
             }
+        }
+    }
+
+    async editarPuesto(nodo?: ColaboradorTreeViewAdapter) {
+        if (nodo && nodo.colaborador) {
+            nodo.colaborador.puesto = await ColaboradorInputHandler.getPuestoFromUsuario(nodo.colaborador.puesto);
+            this.colaboradorProvider.refresh();
+        }
+    }
+
+    async editarCorreo(nodo?: ColaboradorTreeViewAdapter) {
+        if (nodo && nodo.colaborador) {
+            nodo.colaborador.correo = await ColaboradorInputHandler.getCorreoFromUsuario(nodo.colaborador.correo);
+            this.colaboradorProvider.refresh();
         }
     }
 }

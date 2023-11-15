@@ -29,9 +29,34 @@
         "icon": "$(check)"
       },
       {
+        "command": "easy-admin.editarEncargadoDeTarea",
+        "title": "Editar encargado de tarea",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.editarDescripcionDeTarea",
+        "title": "Editar descripción de tarea",
+        "icon": "$(pencil)"
+      },
+      {
         "command": "easy-admin.agregarColaborador",
         "title": "Agregar colaborador",
         "icon": "$(add)"
+      },
+      {
+        "command": "easy-admin.eliminarColaborador",
+        "title": "Eliminar colaborador",
+        "icon": "$(remove-close)"
+      },
+      {
+        "command": "easy-admin.editarPuestoDeColaborador",
+        "title": "Editar puesto de colaborador",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.editarCorreoDeColaborador",
+        "title": "Editar correo de colaborador",
+        "icon": "$(pencil)"
       },
       {
         "command": "easy-admin.example",
@@ -76,6 +101,31 @@
         {
           "command": "easy-admin.cambiarEstado",
           "when": "view == tareas && viewItem == tarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarEncargadoDeTarea",
+          "when": "view == tareas && viewItem == encargadoTarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarDescripcionDeTarea",
+          "when": "view == tareas && viewItem == descripcionTarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.eliminarColaborador",
+          "when": "view == colaboradores && viewItem == colaborador",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarPuestoDeColaborador",
+          "when": "view == colaboradores && viewItem == puestoColaborador",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarCorreoDeColaborador",
+          "when": "view == colaboradores && viewItem == correoColaborador",
           "group": "inline"
         }
       ]

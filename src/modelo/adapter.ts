@@ -1,4 +1,4 @@
-import { TreeItem } from 'vscode';
+import { QuickPickItem, TreeItem } from 'vscode';
 import { Colaborador, Tarea } from './entidad';
 
 export class TareaTreeViewAdapter extends TreeItem {
@@ -18,5 +18,20 @@ export class ColaboradorTreeViewAdapter extends TreeItem {
     constructor(colaborador?: Colaborador) {
         super('');
         this.colaborador = colaborador;
+    }
+}
+
+export class ColaboradorQuickPickAdapter implements QuickPickItem {
+
+    colaborador?: Colaborador;
+    label: string;
+
+    constructor(colaborador?: Colaborador) {
+        this.colaborador = colaborador;
+        if (colaborador) {
+            this.label = colaborador.nombre;
+        } else {
+            this.label = '';
+        }
     }
 }
