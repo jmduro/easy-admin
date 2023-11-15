@@ -60,7 +60,7 @@ export class TareaController {
 
     async agregarTarea() {
         const nombre = await TareaInputHandler.getNombreFromUsuario();
-        if (!nombre || nombre === '') { return; }
+        if (!nombre || nombre.trim() === '') { return; }
         const colaborador = await TareaInputHandler.getColaboradorFromUsuario();
 
         const tarea = new Tarea();
@@ -112,7 +112,7 @@ export class ColaboradorController {
 
     async agregarColaborador() {
         const nombre = await ColaboradorInputHandler.getNombreFromUsuario();
-        if (!nombre || nombre === '') { return; }
+        if (!nombre || nombre.trim() === '') { return; }
         const puesto = await ColaboradorInputHandler.getPuestoFromUsuario();
         const correo = await ColaboradorInputHandler.getCorreoFromUsuario();
 
@@ -132,6 +132,15 @@ export class ColaboradorController {
                 this.tareaProvider.refresh();
                 this.colaboradorProvider.refresh();
             }
+        }
+    }
+
+    async editarNombre(nodo?: ColaboradorTreeViewAdapter) {
+        if (nodo && nodo.colaborador) {
+            const nombre = await ColaboradorInputHandler.getNombreFromUsuario(nodo.colaborador.nombre);
+            if (nombre && nombre.trim() !== '') { nodo.colaborador.nombre = nombre; }
+            this.tareaProvider.refresh();
+            this.colaboradorProvider.refresh();
         }
     }
 

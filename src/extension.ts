@@ -16,8 +16,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.commands.registerCommand('easy-admin.agregarColaborador', () => controller.colaboradorController.agregarColaborador());
 	vscode.commands.registerCommand('easy-admin.eliminarColaborador', (nodo) => controller.colaboradorController.eliminarColaborador(nodo));
-	vscode.commands.registerCommand('easy-admin.editarPuestoDeColaborador', (nodo) => controller.colaboradorController.editarPuesto(nodo));
-	vscode.commands.registerCommand('easy-admin.editarCorreoDeColaborador', (nodo) => controller.colaboradorController.editarCorreo(nodo));
+	vscode.commands.registerCommand('easy-admin.editarNombreColaborador', (nodo) => controller.colaboradorController.editarNombre(nodo));
+	vscode.commands.registerCommand('easy-admin.editarPuestoColaborador', (nodo) => controller.colaboradorController.editarPuesto(nodo));
+	vscode.commands.registerCommand('easy-admin.editarCorreoColaborador', (nodo) => controller.colaboradorController.editarCorreo(nodo));
 
 
 	// Tareas

@@ -101,6 +101,13 @@ export class ColaboradorProvider implements vscode.TreeDataProvider<ColaboradorT
         const items: ColaboradorTreeViewAdapter[] = [];
         let item: ColaboradorTreeViewAdapter;
 
+        // Nombre
+        item = new ColaboradorTreeViewAdapter(element.colaborador);
+        item.label = 'Nombre';
+        item.description = item.colaborador?.nombre;
+        item.tooltip = item.description;
+        item.contextValue = 'nombreColaborador';
+        items.push(item);
         // Puesto
         item = new ColaboradorTreeViewAdapter(element.colaborador);
         item.label = 'Puesto';

@@ -49,12 +49,17 @@
         "icon": "$(remove-close)"
       },
       {
-        "command": "easy-admin.editarPuestoDeColaborador",
+        "command": "easy-admin.editarNombreColaborador",
+        "title": "Editar nombre de colaborador",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.editarPuestoColaborador",
         "title": "Editar puesto de colaborador",
         "icon": "$(pencil)"
       },
       {
-        "command": "easy-admin.editarCorreoDeColaborador",
+        "command": "easy-admin.editarCorreoColaborador",
         "title": "Editar correo de colaborador",
         "icon": "$(pencil)"
       },
@@ -119,12 +124,17 @@
           "group": "inline"
         },
         {
-          "command": "easy-admin.editarPuestoDeColaborador",
+          "command": "easy-admin.editarNombreColaborador",
+          "when": "view == colaboradores && viewItem == nombreColaborador",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarPuestoColaborador",
           "when": "view == colaboradores && viewItem == puestoColaborador",
           "group": "inline"
         },
         {
-          "command": "easy-admin.editarCorreoDeColaborador",
+          "command": "easy-admin.editarCorreoColaborador",
           "when": "view == colaboradores && viewItem == correoColaborador",
           "group": "inline"
         }

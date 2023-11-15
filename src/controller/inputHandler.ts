@@ -33,8 +33,8 @@ export class TareaInputHandler {
 
 export class ColaboradorInputHandler {
 
-    static async getNombreFromUsuario() {
-        return await vscode.window.showInputBox({ prompt: 'Nombre del colaborador' });
+    static async getNombreFromUsuario(value?: string) {
+        return await vscode.window.showInputBox({ prompt: 'Nombre del colaborador', value: value });
     }
 
     static async getPuestoFromUsuario(value?: string) {
