@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
+import { GestorTareas } from "../modelo//gestor";
 
 export class CalendarioPanel {
 	public static currentPanel: CalendarioPanel | undefined;
@@ -30,6 +31,7 @@ export class CalendarioPanel {
 				localResourceRoots: [
 					vscode.Uri.joinPath(extensionUri, "src/media"),
 					vscode.Uri.joinPath(extensionUri, "src/webview"),
+					vscode.Uri.file(vscode.extensions.getExtension('easy-admin')?.extensionPath || ''),
 				],
 			}
 		);
@@ -94,9 +96,6 @@ export class CalendarioPanel {
 		const scriptUri = webview.asWebviewUri(
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/main.js")
 		);
-		const scriptCalen = webview.asWebviewUri(
-			vscode.Uri.joinPath(this._extensionUri, "src", "webview/calendarioVista.ts")
-		);
 		const stylesResetUri = webview.asWebviewUri(
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/reset.css")
 		);
@@ -117,17 +116,27 @@ export class CalendarioPanel {
 			<link href="${stylesResetUri}" rel="stylesheet">
 			<link href="${stylesMainUri}" rel="stylesheet">
             <link href="${stylesSkinUri}" rel="stylesheet">
-            <link rel="stylesheet" href="https://unpkg.com/@fullcalendar/core/main.css" />
-            <link rel="stylesheet" href="https://unpkg.com/@fullcalendar/daygrid/main.css" />
+            <link href="${stylesSkinUri}" rel="stylesheet">
 		</head>
     <body>
     <div id="calendario"></div>
 
+		<script>
+		// Carga dinámica de eventos aquí
+                    const calendarEl = document.getElementById("calendario");
 
-    <script src="https://unpkg.com/@fullcalendar/core/main.js"></script>
-    <script src="https://unpkg.com/@fullcalendar/daygrid/main.js"></script>
+                    // Obtén la información de tareas desde tu extensión
+                    const vscode = acquireVsCodeApi();
+                    const tareas = vscode.getState().tareas || [];
 
-		<script src="${scriptCalen}"></script>
+                    tareas.forEach(tarea => {
+                        // Agrega un evento por cada tarea
+                        const event = document.createElement('div');
+                        event.className = 'event';
+                        event.innerText = tarea.nombre;
+                        calendarEl.appendChild(event);
+                    });
+		</script>
 	</body>
 	<script src="${scriptUri}" ></script>
 	</html>`;
