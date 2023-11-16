@@ -105,8 +105,6 @@ export class ColaboradorPanel {
 		const stylesSkinUri = webview.asWebviewUri(
 			vscode.Uri.joinPath(this._extensionUri, "src", "webview/colaboradores.css")
 		);
-
-		//Agregar los colaboradores a la tabla
 		const colaboradoresTableBody = colaboradores.map(colab => `
 			<tr>
 				<td>${colab.nombre}</td>
