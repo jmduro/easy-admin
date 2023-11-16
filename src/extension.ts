@@ -1,6 +1,9 @@
 import * as vscode from 'vscode';
 import { GestorColaboradores, GestorTareas } from './modelo/gestor';
 import { ColaboradorTreeViewController, TareaTreeViewController } from './controller/controller';
+import { TareaPanel } from './webview/tareas';
+import { ColaboradorPanel } from './webview/colaboradores';
+import { CalendarioPanel } from './webview/calendario';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -23,6 +26,10 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('easy-admin.editarNombreColaborador', (nodo) => colaboradorController.editarNombre(nodo));
 	vscode.commands.registerCommand('easy-admin.editarPuestoColaborador', (nodo) => colaboradorController.editarPuesto(nodo));
 	vscode.commands.registerCommand('easy-admin.editarCorreoColaborador', (nodo) => colaboradorController.editarCorreo(nodo));
+
+	vscode.commands.registerCommand('easy-admin.verTareas', () => { TareaPanel.createOrShow(context.extensionUri); });
+	vscode.commands.registerCommand('easy-admin.verColaboradores', () => { ColaboradorPanel.createOrShow(context.extensionUri); });
+	vscode.commands.registerCommand('easy-admin.verCalendario', () => { CalendarioPanel.createOrShow(context.extensionUri); });
 }
 
 // This method is called when your extension is deactivated
