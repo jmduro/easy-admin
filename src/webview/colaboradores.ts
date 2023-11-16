@@ -1,5 +1,8 @@
 import * as vscode from "vscode";
-import { getNonce } from "./getNonce";
+import { GestorColaboradores } from "../modelo/gestor";
+import { Colaborador } from "../modelo/entidad";
+
+const gestorTareas = new GestorTareas();
 
 export class ColaboradorPanel {
 	public static currentPanel: ColaboradorPanel | undefined;
@@ -69,7 +72,9 @@ export class ColaboradorPanel {
 	private async _update() {
 		const webview = this._panel.webview;
 
-		this._panel.webview.html = this._getHtmlForWebview(webview);
+		const colaboradores = obtenerTodosLosColaboradores();
+
+		this._panel.webview.html = this._getHtmlForWebview(webview, colaboradores);
 		webview.onDidReceiveMessage(async (data) => {
 			switch (data.type) {
 				case "onInfo": {
@@ -90,13 +95,7 @@ export class ColaboradorPanel {
 		});
 	}
 
-	private _getHtmlForWebview(webview: vscode.Webview) {
-		const scriptUri = webview.asWebviewUri(
-			vscode.Uri.joinPath(this._extensionUri, "src", "media/main.js")
-		);
-		const scriptColab = webview.asWebviewUri(
-			vscode.Uri.joinPath(this._extensionUri, "src", "webview/colaboradores.js")
-		);
+	private _getHtmlForWebview(webview: vscode.Webview, colaboradores: Colaborador[]) {
 		const stylesResetUri = webview.asWebviewUri(
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/reset.css")
 		);
@@ -107,35 +106,43 @@ export class ColaboradorPanel {
 			vscode.Uri.joinPath(this._extensionUri, "src", "webview/colaboradores.css")
 		);
 
-		const nonce = getNonce();
-
-		return `<!DOCTYPE html>
-		<html lang="en">
-		<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<link href="${stylesResetUri}" rel="stylesheet">
-			<link href="${stylesMainUri}" rel="stylesheet">
-            <link href="${stylesSkinUri}" rel="stylesheet">
-		</head>
-    <body>
-		<!-- Tabla de tareas -->
-		<h1>Lista de Colaboradores</h1>
-		<table>
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Puesto</th>
-            </tr>
-        </thead>
-        <tbody id="colaboradoresTableBody">
-            <!-- Filas de la tabla se agregarán dinámicamente con JavaScript -->
-        </tbody>
-		</table>
-		<script src="${scriptColab}"></script>
-	</body>
-	<script src="${scriptUri}" ></script>
-	</html>`;
+		//Agregar los colaboradores a la tabla
+		const colaboradoresTableBody = colaboradores.map(colab => `
+			<tr>
+				<td>${colab.nombre}</td>
+				<td>${colab.correo}</td>
+				<td>${colab.puesto}</td>
+			</tr>
+		`).join('');
+		
+		return `
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<link href="${stylesResetUri}" rel="stylesheet">
+				<link href="${stylesMainUri}" rel="stylesheet">
+				<link href="${stylesSkinUri}" rel="stylesheet">
+			</head>
+			<body>
+				<!-- Tabla de tareas -->
+				<h1>Lista de Colaboradores</h1>
+				<table id="colabTable">
+					<thead>
+						<tr>
+							<th>Nombre</th>
+							<th>Correo</th>
+							<th>Puesto</th>
+						</tr>
+					</thead>
+					<tbody id="colaboradoresTableBody">${colaboradoresTableBody}</tbody>
+				</table>
+			</body>
+			</html>`;
 	}
+}
+
+function obtenerTodosLosColaboradores(): Colaborador[] {
+	return GestorColaboradores.consultarTodos();
 }

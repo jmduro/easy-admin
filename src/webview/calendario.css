@@ -6,3 +6,5 @@
     background-color: #e0e0e0;
     /* Agrega más estilos según tus necesidades */
 }
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';

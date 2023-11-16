@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { getNonce } from "./getNonce";
-import { GestorTareas } from "../modelo//gestor";
+import { GestorTareas } from "../modelo/gestor";
+import { Tarea } from "../modelo/entidad";
 
 export class CalendarioPanel {
 	public static currentPanel: CalendarioPanel | undefined;
@@ -71,7 +71,9 @@ export class CalendarioPanel {
 	private async _update() {
 		const webview = this._panel.webview;
 
-		this._panel.webview.html = this._getHtmlForWebview(webview);
+		const tareas = obtenerTodasLasTareas();
+
+		this._panel.webview.html = this._getHtmlForWebview(webview, tareas);
 		webview.onDidReceiveMessage(async (data) => {
 			switch (data.type) {
 				case "onInfo": {
@@ -88,14 +90,31 @@ export class CalendarioPanel {
 					vscode.window.showErrorMessage(data.value);
 					break;
 				}
+				case "tareaAgregada": {
+                    // Obtener las tareas actualizadas después de agregar una tarea
+                    const nuevasTareas = obtenerTodasLasTareas();
+                    // Inicializar o actualizar el calendario después de agregar una tarea
+                    initCalendar(nuevasTareas);
+                    break;
+                }
 			}
 		});
 	}
+	
+	private obtenerTodasLasTareas(): Tarea[] {
+        // Lógica para obtener todas las tareas, puedes adaptarla según tu implementación
+        const gestorTareas = new GestorTareas();
+        return gestorTareas.consultarTodos();
+    }
 
-	private _getHtmlForWebview(webview: vscode.Webview) {
-		const scriptUri = webview.asWebviewUri(
-			vscode.Uri.joinPath(this._extensionUri, "src", "media/main.js")
-		);
+    private initCalendar(tareas: Tarea[]) {
+        // Lógica para inicializar o actualizar el calendario con las tareas proporcionadas
+        // Puedes usar la lógica que prefieras para trabajar con el calendario
+        // Asegúrate de tener la lógica específica de tu calendario aquí
+        console.log("Inicializando o actualizando el calendario con las tareas:", tareas);
+    }
+
+	private _getHtmlForWebview(webview: vscode.Webview, tareas: Tarea[]) {
 		const stylesResetUri = webview.asWebviewUri(
 			vscode.Uri.joinPath(this._extensionUri, "src", "media/reset.css")
 		);
@@ -105,8 +124,6 @@ export class CalendarioPanel {
 		const stylesSkinUri = webview.asWebviewUri(
 			vscode.Uri.joinPath(this._extensionUri, "src", "webview/calendario.css")
 		);
-
-		const nonce = getNonce();
 
 		return `<!DOCTYPE html>
 		<html lang="en">
@@ -118,27 +135,43 @@ export class CalendarioPanel {
             <link href="${stylesSkinUri}" rel="stylesheet">
             <link href="${stylesSkinUri}" rel="stylesheet">
 		</head>
-    <body>
-    <div id="calendario"></div>
+		<body>
+			<!-- Agrega un contenedor para el calendario -->
+			<div id="calendar"></div>
 
-		<script>
-		// Carga dinámica de eventos aquí
-                    const calendarEl = document.getElementById("calendario");
-
-                    // Obtén la información de tareas desde tu extensión
-                    const vscode = acquireVsCodeApi();
-                    const tareas = vscode.getState().tareas || [];
-
-                    tareas.forEach(tarea => {
-                        // Agrega un evento por cada tarea
-                        const event = document.createElement('div');
-                        event.className = 'event';
-                        event.innerText = tarea.nombre;
-                        calendarEl.appendChild(event);
-                    });
-		</script>
-	</body>
-	<script src="${scriptUri}" ></script>
+			<script>
+				// Incluye la lógica de FullCalendar aquí
+				${this.getFullCalendarScript()}
+			</script>
+		</body>
 	</html>`;
 	}
+
+	// Función para obtener la lógica de FullCalendar
+    private getFullCalendarScript() {
+        return `
+            // Importa las bibliotecas de FullCalendar
+            import { Calendar } from '@fullcalendar/core';
+            import dayGridPlugin from '@fullcalendar/daygrid';
+
+            // Crea el calendario
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new Calendar(calendarEl, {
+                plugins: [dayGridPlugin],
+                events: getCalendarEvents(${JSON.stringify(Tarea)}),
+            });
+
+            // Renderiza el calendario
+            calendar.render();
+        `;
+    }
+
+	// Función para convertir tareas en eventos del calendario
+    private getCalendarEvents(tareas: Tarea[]) {
+        return tareas.map((tarea) => ({
+            title: tarea.nombre,
+            start: tarea.fechaLimite.toISOString().split('T')[0], // Formato: 'YYYY-MM-DD'
+            // Puedes agregar más propiedades según tus necesidades
+        }));
+    }
 }
