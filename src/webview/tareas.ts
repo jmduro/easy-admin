@@ -106,7 +106,6 @@ export class TareaPanel {
             vscode.Uri.joinPath(this._extensionUri, "src", "webview/tareas.css")
         );
 
-        // Agrega las tareas a la tabla
         const tasksTableBody = tareas.map(task => `
             <tr>
                 <td>${task.nombre}</td>
@@ -150,8 +149,6 @@ export class TareaPanel {
                     <label for="progressBar">Progress:</label>
                     <progress id="progressBar" value="0" max="100"></progress>
                     <span id="progressLabel">0%</span>
-                    <!-- Agrega este botón al final de tu cuerpo HTML
-                <button id="updateProgressButton">Actualizar Progreso</button>  -->
                 </div>
             </body>
             </html>`;

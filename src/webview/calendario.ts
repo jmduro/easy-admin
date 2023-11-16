@@ -91,9 +91,7 @@ export class CalendarioPanel {
 					break;
 				}
 				case "tareaAgregada": {
-					// Obtener las tareas actualizadas después de agregar una tarea
 					const nuevasTareas = this.obtenerTodasLasTareas();
-					// Inicializar o actualizar el calendario después de agregar una tarea
 					this.initCalendar(nuevasTareas);
 					break;
 				}
@@ -102,15 +100,11 @@ export class CalendarioPanel {
 	}
 
 	private obtenerTodasLasTareas(): Tarea[] {
-		// Lógica para obtener todas las tareas, puedes adaptarla según tu implementación
 		const gestorTareas = GestorTareas.getInstance();
 		return gestorTareas.consultarTodos();
 	}
 
 	private initCalendar(tareas: Tarea[]) {
-		// Lógica para inicializar o actualizar el calendario con las tareas proporcionadas
-		// Puedes usar la lógica que prefieras para trabajar con el calendario
-		// Asegúrate de tener la lógica específica de tu calendario aquí
 		console.log("Inicializando o actualizando el calendario con las tareas:", tareas);
 	}
 
@@ -146,8 +140,6 @@ export class CalendarioPanel {
 		</body>
 	</html>`;
 	}
-
-	// Función para obtener la lógica de FullCalendar
 	private getFullCalendarScript() {
 		return `
             // Importa las bibliotecas de FullCalendar
@@ -165,13 +157,10 @@ export class CalendarioPanel {
             calendar.render();
         `;
 	}
-
-	// Función para convertir tareas en eventos del calendario
 	private getCalendarEvents(tareas: Tarea[]) {
 		return tareas.map((tarea) => ({
 			title: tarea.nombre,
-			start: tarea.fechaLimite.toISOString().split('T')[0], // Formato: 'YYYY-MM-DD'
-			// Puedes agregar más propiedades según tus necesidades
+			start: tarea.fechaLimite.toISOString().split('T')[0],
 		}));
 	}
 }
