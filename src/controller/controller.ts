@@ -61,10 +61,12 @@ export class TareaController {
     async agregarTarea() {
         const nombre = await TareaInputHandler.getNombreFromUsuario();
         if (!nombre || nombre.trim() === '') { return; }
+        const fechaLimite = await TareaInputHandler.getFechaLimiteFromUsuario();
         const colaborador = await TareaInputHandler.getColaboradorFromUsuario();
 
         const tarea = new Tarea();
         tarea.nombre = nombre;
+        tarea.fechaLimite = fechaLimite;
         if (colaborador) { tarea.encargado = colaborador; }
 
         this.gestorTareas.agregar(tarea);
@@ -83,6 +85,22 @@ export class TareaController {
     cambiarEstado(nodo?: TareaTreeViewAdapter) {
         if (nodo && nodo.tarea) {
             nodo.tarea.completado = !nodo.tarea.completado;
+            this.tareaProvider.refresh();
+        }
+    }
+
+    async editarNombre(nodo?: TareaTreeViewAdapter) {
+        if (nodo && nodo.tarea) {
+            const nombre = await TareaInputHandler.getNombreFromUsuario(nodo.tarea.nombre);
+            if (!nombre || nombre.trim() === '') { return; }
+            nodo.tarea.nombre = nombre;
+            this.tareaProvider.refresh();
+        }
+    }
+
+    async editarFechaLimite(nodo?: TareaTreeViewAdapter) {
+        if (nodo && nodo.tarea) {
+            nodo.tarea.fechaLimite = await TareaInputHandler.getFechaLimiteFromUsuario(nodo.tarea.fechaLimite);
             this.tareaProvider.refresh();
         }
     }

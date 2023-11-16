@@ -4,8 +4,84 @@ import { ColaboradorQuickPickAdapter } from '../modelo/adapter';
 
 export class TareaInputHandler {
 
-    static async getNombreFromUsuario() {
-        return await vscode.window.showInputBox({ prompt: 'Nombre de la tarea' });
+    static async getNombreFromUsuario(value?: string) {
+        return await vscode.window.showInputBox({ prompt: 'Nombre de la tarea', value: value });
+    }
+
+    static async getFechaLimiteFromUsuario(value?: Date) {
+        const opcion = await vscode.window.showQuickPick(['Hoy', 'Mañana', 'Pasado mañana', 'En tres días', 'Fecha específica'], { placeHolder: 'Elige una opción para la fecha límite' });
+        const today = new Date();
+        if (opcion) {
+            const date = new Date(today);
+            switch (opcion) {
+                case 'Hoy':
+                    return today;
+                case 'Mañana':
+                    date.setDate(today.getDate() + 1);
+                    return date;
+                case 'Pasado mañana':
+                    date.setDate(today.getDate() + 2);
+                    return date;
+                case 'En tres días':
+                    date.setDate(today.getDate() + 3);
+                    return date;
+                case 'Fecha específica':
+                    const specificDate = await TareaInputHandler.getFechaPersonalizadaFromUsuario();
+                    if (specificDate) { return specificDate; }
+                    break;
+                default:
+                    return today;
+            }
+        }
+        return value ? value : today;
+    }
+
+    private static async getFechaPersonalizadaFromUsuario() {
+        const input = await vscode.window.showInputBox({ prompt: 'Ingresa la fecha límite para la tarea' });
+        if (input) {
+            return TareaInputHandler.parseDateString(input);
+        }
+        return new Date();
+    }
+
+    private static parseDateString(inputString: string) {
+        const patterns = [
+            /^(\d{1,2})[-/\s](\d{1,2})[-/\s](\d{4})$/, // dd mm yyyy o dd-mm-yyyy
+            /^(\d{1,2})[-/\s](\d{1,2})$/, // dd mm o dd-mm
+            /^(\d{1,2})$/ // dd
+        ];
+
+        for (const pattern of patterns) {
+            const match = inputString.match(pattern);
+            if (match) {
+                const [, dayString, monthString, yearString] = match;
+                const year = parseInt(yearString);
+                const month = parseInt(monthString) - 1;
+                const day = parseInt(dayString);
+                if (yearString) { // dd mm yyyy o dd-mm-yyyy
+                    return new Date(year, month, day);
+                }
+                if (monthString) { // dd mm o dd-mm
+                    const currentYear = new Date().getFullYear();
+                    return new Date(currentYear, month, day);
+                }
+                if (day > 0) {
+                    const currentYear = new Date().getFullYear();
+                    const currentMonth = new Date().getMonth();
+                    const currentDay = new Date().getDate();
+
+                    if (day <= currentDay) {
+                        return new Date(currentYear, currentMonth, day);
+                    } else {
+                        const diff = day - currentDay;
+                        const today = new Date();
+                        const date = new Date(today);
+                        date.setDate(today.getDate() + diff);
+                        return date;
+                    }
+                }
+            }
+        }
     }
 
     static async getColaboradorFromUsuario() {

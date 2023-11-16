@@ -29,12 +29,22 @@
         "icon": "$(check)"
       },
       {
-        "command": "easy-admin.editarEncargadoDeTarea",
+        "command": "easy-admin.editarNombreTarea",
+        "title": "Editar nombre de tarea",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.editarFechaLimiteTarea",
+        "title": "Editar fecha límite de tarea",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.editarEncargadoTarea",
         "title": "Editar encargado de tarea",
         "icon": "$(pencil)"
       },
       {
-        "command": "easy-admin.editarDescripcionDeTarea",
+        "command": "easy-admin.editarDescripcionTarea",
         "title": "Editar descripción de tarea",
         "icon": "$(pencil)"
       },
@@ -109,12 +119,22 @@
           "group": "inline"
         },
         {
-          "command": "easy-admin.editarEncargadoDeTarea",
+          "command": "easy-admin.editarNombreTarea",
+          "when": "view == tareas && viewItem == nombreTarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarFechaLimiteTarea",
+          "when": "view == tareas && viewItem == fechaLimiteTarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarEncargadoTarea",
           "when": "view == tareas && viewItem == encargadoTarea",
           "group": "inline"
         },
         {
-          "command": "easy-admin.editarDescripcionDeTarea",
+          "command": "easy-admin.editarDescripcionTarea",
           "when": "view == tareas && viewItem == descripcionTarea",
           "group": "inline"
         },

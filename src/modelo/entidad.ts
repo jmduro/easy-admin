@@ -41,19 +41,10 @@ export class Tarea {
 
     id: bigint = 0n;
     nombre: string = '';
-    private _fechaLimite: Date = new Date();
+    fechaLimite: Date = new Date();
     private _encargado?: Colaborador = undefined;
     descripcion: string = '';
     completado: boolean = false;
-
-    get fechaLimite(): string {
-        return this._fechaLimite.toDateString();
-    }
-
-    set fechaLimite(fechaLimite: string) {
-        // Comprobación de fecha
-        return;
-    }
 
     get encargado(): string {
         if (this._encargado) {
@@ -79,7 +70,7 @@ export class Tarea {
         return (
             id.test(this.id.toString()) &&
             nombre.test(this.nombre) &&
-            fechaLimite.test(this.fechaLimite) &&
+            fechaLimite.test(this.fechaLimite.toDateString()) &&
             encargado.test(this.encargado) &&
             descripcion.test(this.descripcion) &&
             this.completado === tarea.completado

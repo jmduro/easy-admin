@@ -11,8 +11,10 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('easy-admin.agregarTarea', () => controller.tareaController.agregarTarea());
 	vscode.commands.registerCommand('easy-admin.eliminarTarea', (nodo) => controller.tareaController.eliminarTarea(nodo));
 	vscode.commands.registerCommand('easy-admin.cambiarEstado', (nodo) => controller.tareaController.cambiarEstado(nodo));
-	vscode.commands.registerCommand('easy-admin.editarEncargadoDeTarea', (nodo) => controller.tareaController.editarEncargado(nodo));
-	vscode.commands.registerCommand('easy-admin.editarDescripcionDeTarea', (nodo) => controller.tareaController.editarDescripcion(nodo));
+	vscode.commands.registerCommand('easy-admin.editarNombreTarea', (nodo) => controller.tareaController.editarNombre(nodo));
+	vscode.commands.registerCommand('easy-admin.editarFechaLimiteTarea', (nodo) => controller.tareaController.editarFechaLimite(nodo));
+	vscode.commands.registerCommand('easy-admin.editarEncargadoTarea', (nodo) => controller.tareaController.editarEncargado(nodo));
+	vscode.commands.registerCommand('easy-admin.editarDescripcionTarea', (nodo) => controller.tareaController.editarDescripcion(nodo));
 
 	vscode.commands.registerCommand('easy-admin.agregarColaborador', () => controller.colaboradorController.agregarColaborador());
 	vscode.commands.registerCommand('easy-admin.eliminarColaborador', (nodo) => controller.colaboradorController.eliminarColaborador(nodo));
