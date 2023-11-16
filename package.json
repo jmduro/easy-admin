@@ -15,37 +15,143 @@
     "commands": [
       {
         "command": "easy-admin.agregarTarea",
-        "title": "Easy Admin: Agregar tarea",
-        "icon": {
-          "light": "resources/light/add.svg",
-          "dark": "resources/dark/add.svg"
-        }
+        "title": "Agregar tarea",
+        "icon": "$(add)"
       },
       {
         "command": "easy-admin.eliminarTarea",
-        "title": "Easy Admin: Eliminar tarea",
-        "icon": {
-          "light": "resources/light/delete.svg",
-          "dark": "resources/dark/delete.svg"
-        }
+        "title": "Eliminar tarea",
+        "icon": "$(remove-close)"
       },
       {
-        "command": "easy-admin.altenarEstado",
-        "title": "Easy Admin: Marcar tarea como completada"
+        "command": "easy-admin.cambiarEstado",
+        "title": "Marcar tarea como completada",
+        "icon": "$(check)"
+      },
+      {
+        "command": "easy-admin.editarNombreTarea",
+        "title": "Editar nombre de tarea",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.editarFechaLimiteTarea",
+        "title": "Editar fecha límite de tarea",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.editarEncargadoTarea",
+        "title": "Editar encargado de tarea",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.editarDescripcionTarea",
+        "title": "Editar descripción de tarea",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.agregarColaborador",
+        "title": "Agregar colaborador",
+        "icon": "$(add)"
+      },
+      {
+        "command": "easy-admin.eliminarColaborador",
+        "title": "Eliminar colaborador",
+        "icon": "$(remove-close)"
+      },
+      {
+        "command": "easy-admin.editarNombreColaborador",
+        "title": "Editar nombre de colaborador",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.editarPuestoColaborador",
+        "title": "Editar puesto de colaborador",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.editarCorreoColaborador",
+        "title": "Editar correo de colaborador",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "easy-admin.abrirPanel",
+        "title": "Abrir Panel"
+      },
+      {
+        "command": "easy-admin.verTareas",
+        "title": "Ver Tareas"
+      },
+      {
+        "command": "easy-admin.verColaboradores",
+        "title": "Ver Colaboradores"
+      },
+      {
+        "command": "easy-admin.verCalendario",
+        "title": "Ver Calendario"
       }
     ],
     "menus": {
       "view/title": [
         {
           "command": "easy-admin.agregarTarea",
-          "when": "view == easy-admin",
+          "when": "view == tareas",
+          "group": "navigation"
+        },
+        {
+          "command": "easy-admin.agregarColaborador",
+          "when": "view == colaboradores",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "easy-admin.eliminarTarea",
-          "when": "view == easy-admin && viewItem == tarea",
+          "when": "view == tareas && viewItem == tarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.cambiarEstado",
+          "when": "view == tareas && viewItem == tarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarNombreTarea",
+          "when": "view == tareas && viewItem == nombreTarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarFechaLimiteTarea",
+          "when": "view == tareas && viewItem == fechaLimiteTarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarEncargadoTarea",
+          "when": "view == tareas && viewItem == encargadoTarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarDescripcionTarea",
+          "when": "view == tareas && viewItem == descripcionTarea",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.eliminarColaborador",
+          "when": "view == colaboradores && viewItem == colaborador",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarNombreColaborador",
+          "when": "view == colaboradores && viewItem == nombreColaborador",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarPuestoColaborador",
+          "when": "view == colaboradores && viewItem == puestoColaborador",
+          "group": "inline"
+        },
+        {
+          "command": "easy-admin.editarCorreoColaborador",
+          "when": "view == colaboradores && viewItem == correoColaborador",
           "group": "inline"
         }
       ]
@@ -68,10 +174,6 @@
         {
           "id": "colaboradores",
           "name": "Colaboradores"
-        },
-        {
-          "id": "calendario",
-          "name": "Calendario"
         }
       ]
     }
@@ -85,15 +187,19 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.83.0",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
+    "@types/vscode": "^1.83.0",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
+    "@vscode/test-electron": "^2.3.6",
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
-    "typescript": "^5.2.2",
-    "@vscode/test-electron": "^2.3.6"
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.9",
+    "@fullcalendar/daygrid": "^6.1.9"
   }
 }

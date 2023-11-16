@@ -1,0 +1,10 @@
+/* En el mismo directorio de tu extensión, crea un archivo styles.css */
+.event {
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 5px;
+    background-color: #e0e0e0;
+    /* Agrega más estilos según tus necesidades */
+}
+@import '~@fullcalendar/core/main.css';
+@import '~@fullcalendar/daygrid/main.css';
