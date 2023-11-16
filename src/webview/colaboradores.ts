@@ -2,8 +2,6 @@ import * as vscode from "vscode";
 import { GestorColaboradores, GestorTareas } from "../modelo/gestor";
 import { Colaborador } from "../modelo/entidad";
 
-const gestorColaboradores = new GestorColaboradores();
-
 export class ColaboradorPanel {
 	public static currentPanel: ColaboradorPanel | undefined;
 
@@ -12,6 +10,8 @@ export class ColaboradorPanel {
 	private readonly _panel: vscode.WebviewPanel;
 	private readonly _extensionUri: vscode.Uri;
 	private _disposables: vscode.Disposable[] = [];
+
+	private gestorColaboradores = GestorColaboradores.getInstance();
 
 	public static createOrShow(extensionUri: vscode.Uri) {
 		const column = vscode.window.activeTextEditor
@@ -72,7 +72,7 @@ export class ColaboradorPanel {
 	private async _update() {
 		const webview = this._panel.webview;
 
-		const colaboradores = obtenerTodosLosColaboradores();
+		const colaboradores = this.obtenerTodosLosColaboradores();
 
 		this._panel.webview.html = this._getHtmlForWebview(webview, colaboradores);
 		webview.onDidReceiveMessage(async (data) => {
@@ -141,8 +141,8 @@ export class ColaboradorPanel {
 			</body>
 			</html>`;
 	}
-}
 
-function obtenerTodosLosColaboradores(): Colaborador[] {
-	return gestorColaboradores.consultarTodos();
+	private obtenerTodosLosColaboradores(): Colaborador[] {
+		return this.gestorColaboradores.consultarTodos();
+	}
 }

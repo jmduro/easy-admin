@@ -79,15 +79,15 @@
       },
       {
         "command": "easy-admin.verTareas",
-        "title": "Mostrar Tareas"
+        "title": "Ver Tareas"
       },
       {
         "command": "easy-admin.verColaboradores",
-        "title": "Mostrar Colaboradores"
+        "title": "Ver Colaboradores"
       },
       {
         "command": "easy-admin.verCalendario",
-        "title": "Desplegar Calendario"
+        "title": "Ver Calendario"
       }
     ],
     "menus": {

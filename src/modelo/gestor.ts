@@ -15,14 +15,20 @@ export class GestorTareas implements Gestor<Tarea> {
 
     private static id: number = 1;
     private static tareas: Tarea[];
+    private static instance: GestorTareas;
 
-    constructor(
-        private context?: ExtensionContext
+    private constructor(
+        private context: ExtensionContext
     ) {
-        if (context) {
-            this.context = context;
-            GestorTareas.tareas = this.context.globalState.get<Tarea[]>('tareas', []);
+        this.context = context;
+        GestorTareas.tareas = this.context.globalState.get<Tarea[]>('tareas', []);
+    }
+
+    static getInstance(context?: ExtensionContext): GestorTareas {
+        if (!GestorTareas.instance && context) {
+            GestorTareas.instance = new GestorTareas(context);
         }
+        return GestorTareas.instance;
     }
 
     agregar(entidad: Tarea): void {
@@ -66,7 +72,7 @@ export class GestorTareas implements Gestor<Tarea> {
     }
 
     private guardarCambios() {
-        if (this.context) { this.context?.globalState.update('tareas', GestorTareas.tareas); }
+        this.context.globalState.update('tareas', GestorTareas.tareas);
     }
 
     private notificarEvento(titulo: string, mensaje: string) {
@@ -97,14 +103,20 @@ export class GestorColaboradores implements Gestor<Colaborador> {
 
     private static id: number = 1;
     private static colaboradores: Colaborador[];
+    private static instance: GestorColaboradores;
 
-    constructor(
-        private context?: ExtensionContext
+    private constructor(
+        private context: ExtensionContext
     ) {
-        if (context) {
-            this.context = context;
-            GestorColaboradores.colaboradores = this.context.globalState.get<Colaborador[]>('colaboradores', []);
+        this.context = context;
+        GestorColaboradores.colaboradores = this.context.globalState.get<Colaborador[]>('colaboradores', []);
+    }
+
+    static getInstance(context?: ExtensionContext): GestorColaboradores {
+        if (!GestorColaboradores.instance && context) {
+            GestorColaboradores.instance = new GestorColaboradores(context);
         }
+        return GestorColaboradores.instance;
     }
 
     agregar(entidad: Colaborador): void {
@@ -146,6 +158,6 @@ export class GestorColaboradores implements Gestor<Colaborador> {
     }
 
     private guardarCambios() {
-        if (this.context) { this.context.globalState.update('colaboradores', GestorColaboradores.colaboradores); }
+        this.context.globalState.update('colaboradores', GestorColaboradores.colaboradores);
     }
 }

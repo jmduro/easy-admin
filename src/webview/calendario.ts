@@ -103,7 +103,7 @@ export class CalendarioPanel {
 
 	private obtenerTodasLasTareas(): Tarea[] {
 		// Lógica para obtener todas las tareas, puedes adaptarla según tu implementación
-		const gestorTareas = new GestorTareas();
+		const gestorTareas = GestorTareas.getInstance();
 		return gestorTareas.consultarTodos();
 	}
 

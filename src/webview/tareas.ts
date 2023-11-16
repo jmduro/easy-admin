@@ -2,8 +2,6 @@ import * as vscode from "vscode";
 import { GestorTareas } from "../modelo/gestor";
 import { Tarea } from "../modelo/entidad";
 
-const gestorTareas = new GestorTareas();
-
 export class TareaPanel {
     public static currentPanel: TareaPanel | undefined;
 
@@ -12,6 +10,8 @@ export class TareaPanel {
     private readonly _panel: vscode.WebviewPanel;
     private readonly _extensionUri: vscode.Uri;
     private _disposables: vscode.Disposable[] = [];
+
+    private gestorTareas = GestorTareas.getInstance();
 
     public static createOrShow(extensionUri: vscode.Uri) {
         const column = vscode.window.activeTextEditor
@@ -72,7 +72,7 @@ export class TareaPanel {
     private async _update() {
         const webview = this._panel.webview;
 
-        const tareas = obtenerTodasLasTareas();
+        const tareas = this.obtenerTodasLasTareas();
 
         this._panel.webview.html = this._getHtmlForWebview(webview, tareas);
         webview.onDidReceiveMessage(async (data) => {
@@ -110,7 +110,7 @@ export class TareaPanel {
         const tasksTableBody = tareas.map(task => `
             <tr>
                 <td>${task.nombre}</td>
-                <td>${task.fechaLimite.toDateString()}</td>
+                <td>${new Date(task.fechaLimite).toDateString()}</td>
                 <td>${task.descripcion}</td>
                 <td>${task.encargado ? task.encargado : ''}</td>
                 <td>
@@ -156,8 +156,7 @@ export class TareaPanel {
             </body>
             </html>`;
     }
-}
-
-function obtenerTodasLasTareas(): Tarea[] {
-    return gestorTareas.consultarTodos();
+    private obtenerTodasLasTareas(): Tarea[] {
+        return this.gestorTareas.consultarTodos();
+    }
 }

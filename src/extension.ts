@@ -7,8 +7,8 @@ import { CalendarioPanel } from './webview/calendario';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	const gestorTareas = new GestorTareas(context);
-	const gestorColaboradores = new GestorColaboradores(context);
+	const gestorTareas = GestorTareas.getInstance(context);
+	const gestorColaboradores = GestorColaboradores.getInstance(context);
 
 	const tareaController = new TareaTreeViewController(gestorTareas, gestorColaboradores);
 	const colaboradorController = new ColaboradorTreeViewController(gestorColaboradores);
