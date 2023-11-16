@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Controller } from './controller/controller';
-import { TareaVista } from './webview/tareas';
+import { TareaPanel } from './webview/tareas';
 import { ColaboradorPanel } from './webview/colaboradores';
 import { CalendarioPanel } from './webview/calendario';
 
@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Tareas
 	context.subscriptions.push(
 		vscode.commands.registerCommand('easy-admin.tareas', () => {
-			TareaVista.createOrShow(context.extensionUri);
+			TareaPanel.createOrShow(context.extensionUri);
 		})
 	);
 
