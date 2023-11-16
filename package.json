@@ -3,6 +3,7 @@
   "displayName": "Easy Admin",
   "description": "Organización de tareas eficientes en entornos de desarrollo",
   "version": "1.0.0",
+  "publisher": "enpresa",
   "repository": {
     "type": "git",
     "url": "https://github.com/jmduro/easy-admin.git"
