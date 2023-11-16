@@ -4,60 +4,23 @@ import { GestorColaboradores, GestorTareas } from '../modelo/gestor';
 import { ColaboradorTreeViewAdapter, TareaTreeViewAdapter } from '../modelo/adapter';
 import { ColaboradorProvider, TareaProvider } from '../view/treeview';
 import { ColaboradorInputHandler, TareaInputHandler } from './inputHandler';
+import { TareaPanel } from '../webview/tareas';
 
-export class Controller {
+export class TareaTreeViewController {
 
-    tareaController: TareaController;
-    colaboradorController: ColaboradorController;
-
-    constructor(context: vscode.ExtensionContext) {
-        // Gestores
-        const gestorTareas = new GestorTareas(context);
-        const gestorColaboradores = new GestorColaboradores(context);
-
-        // Proveedores para TreeViews
-        const tareaProvider = new TareaProvider(gestorTareas);
-        const colaboradorProvider = new ColaboradorProvider(gestorColaboradores);
-
-        // Controladores y vistas
-        this.tareaController = new TareaController(gestorTareas, gestorColaboradores, tareaProvider);
-        this.colaboradorController = new ColaboradorController(gestorColaboradores, tareaProvider, colaboradorProvider);
-        vscode.window.createTreeView('tareas', { treeDataProvider: tareaProvider });
-        vscode.window.createTreeView('colaboradores', { treeDataProvider: colaboradorProvider });
-    }
-
-    private loadValues(gestorTareas: GestorTareas, gestorColaboradores: GestorColaboradores) {
-        let colaborador: Colaborador;
-
-        colaborador = new Colaborador();
-        colaborador.nombre = 'Alejo';
-
-        gestorColaboradores.agregar(colaborador);
-
-        let tarea: Tarea;
-
-        tarea = new Tarea();
-        tarea.nombre = 'Tarea 1';
-        tarea.encargado = colaborador;
-        tarea.descripcion = 'Ejemplo';
-        tarea.completado = true;
-        gestorTareas.agregar(tarea);
-
-        tarea = new Tarea();
-        tarea.nombre = 'Tarea 2';
-        tarea.encargado = colaborador;
-        tarea.descripcion = 'Otro ejemplo';
-        gestorTareas.agregar(tarea);
-    }
-}
-
-export class TareaController {
+    private gestorTareas: GestorTareas;
+    private gestorColaboradores: GestorColaboradores;
+    private tareaProvider: TareaProvider;
 
     constructor(
-        private gestorTareas: GestorTareas,
-        private gestorColaboradores: GestorColaboradores,
-        private tareaProvider: TareaProvider
-    ) { }
+        gestorTareas: GestorTareas,
+        gestorColaboradores: GestorColaboradores
+    ) {
+        this.gestorTareas = gestorTareas;
+        this.gestorColaboradores = gestorColaboradores;
+        this.tareaProvider = new TareaProvider(gestorTareas);
+        vscode.window.createTreeView('tareas', { treeDataProvider: this.tareaProvider });
+    }
 
     async agregarTarea() {
         const nombre = await TareaInputHandler.getNombreFromUsuario();
@@ -121,13 +84,18 @@ export class TareaController {
     }
 }
 
-export class ColaboradorController {
+export class ColaboradorTreeViewController {
+
+    private gestorColaboradores: GestorColaboradores;
+    private colaboradorProvider: ColaboradorProvider;
 
     constructor(
-        private gestorColaboradores: GestorColaboradores,
-        private tareaProvider: TareaProvider,
-        private colaboradorProvider: ColaboradorProvider
-    ) { }
+        gestorColaboradores: GestorColaboradores
+    ) {
+        this.gestorColaboradores = gestorColaboradores;
+        this.colaboradorProvider = new ColaboradorProvider(gestorColaboradores);
+        vscode.window.createTreeView('colaboradores', { treeDataProvider: this.colaboradorProvider });
+    }
 
     async agregarColaborador() {
         const nombre = await ColaboradorInputHandler.getNombreFromUsuario();
@@ -148,7 +116,6 @@ export class ColaboradorController {
         if (nodo && nodo.colaborador) {
             if (await ColaboradorInputHandler.getRespuestaEliminarColaboradorFromUsuario()) {
                 this.gestorColaboradores.eliminar(nodo.colaborador.id);
-                this.tareaProvider.refresh();
                 this.colaboradorProvider.refresh();
             }
         }
@@ -158,7 +125,6 @@ export class ColaboradorController {
         if (nodo && nodo.colaborador) {
             const nombre = await ColaboradorInputHandler.getNombreFromUsuario(nodo.colaborador.nombre);
             if (nombre && nombre.trim() !== '') { nodo.colaborador.nombre = nombre; }
-            this.tareaProvider.refresh();
             this.colaboradorProvider.refresh();
         }
     }

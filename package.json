@@ -74,23 +74,19 @@
         "icon": "$(pencil)"
       },
       {
-        "command": "easy-admin.example",
-        "title": "Mostrar ejemplo"
-      },
-      {
         "command": "easy-admin.abrirPanel",
         "title": "Abrir Panel"
       },
       {
-        "command": "easy-admin.tareas",
+        "command": "easy-admin.verTareas",
         "title": "Mostrar Tareas"
       },
       {
-        "command": "easy-admin.colaboradores",
+        "command": "easy-admin.verColaboradores",
         "title": "Mostrar Colaboradores"
       },
       {
-        "command": "easy-admin.calendario",
+        "command": "easy-admin.verCalendario",
         "title": "Desplegar Calendario"
       }
     ],
