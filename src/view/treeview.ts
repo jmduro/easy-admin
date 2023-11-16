@@ -35,8 +35,10 @@ export class TareaProvider implements vscode.TreeDataProvider<TareaTreeViewAdapt
         // Fecha límite
         item = new TareaTreeViewAdapter(element.tarea);
         item.label = 'Fecha límite';
-        item.description = item.tarea?.fechaLimite.toDateString();
-        item.tooltip = item.description;
+        if (item.tarea?.fechaLimite) {
+            item.description = new Date(item.tarea?.fechaLimite).toDateString();
+            item.tooltip = item.description;
+        }
         item.contextValue = 'fechaLimiteTarea';
         items.push(item);
         // Encargado

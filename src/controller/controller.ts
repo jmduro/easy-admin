@@ -4,7 +4,6 @@ import { GestorColaboradores, GestorTareas } from '../modelo/gestor';
 import { ColaboradorTreeViewAdapter, TareaTreeViewAdapter } from '../modelo/adapter';
 import { ColaboradorProvider, TareaProvider } from '../view/treeview';
 import { ColaboradorInputHandler, TareaInputHandler } from './inputHandler';
-import { TareaPanel } from '../webview/tareas';
 
 export class TareaTreeViewController {
 
