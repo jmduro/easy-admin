@@ -119,9 +119,8 @@ export class ColaboradorPanel {
             <link href="${stylesSkinUri}" rel="stylesheet">
 		</head>
     <body>
-		<h1>Colaboradores</h1>
 		<!-- Tabla de tareas -->
-		<h2>Lista de Colaboradores</h2>
+		<h1>Lista de Colaboradores</h1>
 		<table>
         <thead>
             <tr>
@@ -134,26 +133,6 @@ export class ColaboradorPanel {
             <!-- Filas de la tabla se agregarán dinámicamente con JavaScript -->
         </tbody>
 		</table>
-
-		<!-- Formulario para agregar/modificar tareas -->
-		<h2>Añadir colaborador</h2>
-		<form id="colaboradorForm">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" required>
-        
-        <label for="correo">Correo:</label>
-        <input type="text" id="correo" required>
-        
-        <label for="puesto">Puesto:</label>
-        <input type="text" id="puesto" required>
-        
-        <div class="button-container">
-            <button class="button" type="button" onclick="agregarColaborador()">Agregar</button>
-            <button class="button cancel" type="button" onclick="cerrarWebview()">Cancelar</button>
-        </div>
-		</form>
-		
-
 		<script src="${scriptColab}"></script>
 	</body>
 	<script src="${scriptUri}" ></script>

@@ -116,9 +116,8 @@ export class TareaPanel {
             <link rel="stylesheet" href="${stylesSkinUri}">
         </head>
         <body>
-            <h1>Actividades</h1>
             <!-- Tabla de tareas -->
-            <h2>Lista de Tareas</h2>
+            <h1>Lista de Tareas</h1>
             <table id="tasksTable">
                 <thead>
                     <tr>
@@ -137,8 +136,8 @@ export class TareaPanel {
                 <label for="progressBar">Progress:</label>
                 <progress id="progressBar" value="0" max="100"></progress>
                 <span id="progressLabel">0%</span>
-                <!-- Agrega este botón al final de tu cuerpo HTML -->
-                <button id="updateProgressButton">Actualizar Progreso</button>
+                <!-- Agrega este botón al final de tu cuerpo HTML
+                <button id="updateProgressButton">Actualizar Progreso</button>  -->
             </div>
 
             <script src="${scriptTarea}"></script>
