@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
-import { GestorColaboradores } from "../modelo/gestor";
+import { GestorColaboradores, GestorTareas } from "../modelo/gestor";
 import { Colaborador } from "../modelo/entidad";
 
-const gestorTareas = new GestorTareas();
+const gestorColaboradores = new GestorColaboradores();
 
 export class ColaboradorPanel {
 	public static currentPanel: ColaboradorPanel | undefined;
@@ -114,7 +114,7 @@ export class ColaboradorPanel {
 				<td>${colab.puesto}</td>
 			</tr>
 		`).join('');
-		
+
 		return `
 			<!DOCTYPE html>
 			<html lang="en">
@@ -144,5 +144,5 @@ export class ColaboradorPanel {
 }
 
 function obtenerTodosLosColaboradores(): Colaborador[] {
-	return GestorColaboradores.consultarTodos();
+	return gestorColaboradores.consultarTodos();
 }

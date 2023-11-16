@@ -17,9 +17,12 @@ export class GestorTareas implements Gestor<Tarea> {
     private static tareas: Tarea[];
 
     constructor(
-        private context: ExtensionContext
+        private context?: ExtensionContext
     ) {
-        GestorTareas.tareas = this.context.globalState.get<Tarea[]>('tareas', []);
+        if (context) {
+            this.context = context;
+            GestorTareas.tareas = this.context.globalState.get<Tarea[]>('tareas', []);
+        }
     }
 
     agregar(entidad: Tarea): void {
@@ -63,7 +66,7 @@ export class GestorTareas implements Gestor<Tarea> {
     }
 
     private guardarCambios() {
-        this.context.globalState.update('tareas', GestorTareas.tareas);
+        if (this.context) { this.context?.globalState.update('tareas', GestorTareas.tareas); }
     }
 
     private notificarEvento(titulo: string, mensaje: string) {
@@ -96,9 +99,12 @@ export class GestorColaboradores implements Gestor<Colaborador> {
     private static colaboradores: Colaborador[];
 
     constructor(
-        private context: ExtensionContext
+        private context?: ExtensionContext
     ) {
-        GestorColaboradores.colaboradores = this.context.globalState.get<Colaborador[]>('colaboradores', []);
+        if (context) {
+            this.context = context;
+            GestorColaboradores.colaboradores = this.context.globalState.get<Colaborador[]>('colaboradores', []);
+        }
     }
 
     agregar(entidad: Colaborador): void {
@@ -140,6 +146,6 @@ export class GestorColaboradores implements Gestor<Colaborador> {
     }
 
     private guardarCambios() {
-        this.context.globalState.update('colaboradores', GestorColaboradores.colaboradores);
+        if (this.context) { this.context.globalState.update('colaboradores', GestorColaboradores.colaboradores); }
     }
 }
