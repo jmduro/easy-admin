@@ -1,6 +1,6 @@
 export class Colaborador {
 
-    id: bigint = 0n;
+    id: number = 0;
     nombre: string = '';
     correo: string = '';
     puesto: string = '';
@@ -39,7 +39,7 @@ export class Colaborador {
 
 export class Tarea {
 
-    id: bigint = 0n;
+    id: number = 0;
     nombre: string = '';
     fechaLimite: Date = new Date();
     private _encargado?: Colaborador = undefined;

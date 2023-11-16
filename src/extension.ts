@@ -6,7 +6,7 @@ import { CalendarioPanel } from './webview/calendario';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	const controller = new Controller();
+	const controller = new Controller(context);
 
 	vscode.commands.registerCommand('easy-admin.agregarTarea', () => controller.tareaController.agregarTarea());
 	vscode.commands.registerCommand('easy-admin.eliminarTarea', (nodo) => controller.tareaController.eliminarTarea(nodo));

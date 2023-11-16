@@ -10,28 +10,30 @@ export class Controller {
     tareaController: TareaController;
     colaboradorController: ColaboradorController;
 
-    constructor() {
-        const gestorTareas = new GestorTareas();
-        const tareaProvider = new TareaProvider(gestorTareas);
-        this.tareaController = new TareaController(gestorTareas, tareaProvider);
-        vscode.window.createTreeView('tareas', { treeDataProvider: tareaProvider });
+    constructor(context: vscode.ExtensionContext) {
+        // Gestores
+        const gestorTareas = new GestorTareas(context);
+        const gestorColaboradores = new GestorColaboradores(context);
 
-        const gestorColaboradores = new GestorColaboradores();
+        // Proveedores para TreeViews
+        const tareaProvider = new TareaProvider(gestorTareas);
         const colaboradorProvider = new ColaboradorProvider(gestorColaboradores);
+
+        // Controladores y vistas
+        this.tareaController = new TareaController(gestorTareas, gestorColaboradores, tareaProvider);
         this.colaboradorController = new ColaboradorController(gestorColaboradores, tareaProvider, colaboradorProvider);
+        vscode.window.createTreeView('tareas', { treeDataProvider: tareaProvider });
         vscode.window.createTreeView('colaboradores', { treeDataProvider: colaboradorProvider });
 
-        this.loadValues();  // ! Borrar en producción
+        // this.loadValues(gestorTareas, gestorColaboradores);  // ! Borrar en producción
     }
 
-    private loadValues() {
-        const gestorTareas = new GestorTareas();
-        const gestorColaboradores = new GestorColaboradores();
-
+    private loadValues(gestorTareas: GestorTareas, gestorColaboradores: GestorColaboradores) {
         let colaborador: Colaborador;
 
         colaborador = new Colaborador();
         colaborador.nombre = 'Alejo';
+
         gestorColaboradores.agregar(colaborador);
 
         let tarea: Tarea;
@@ -55,6 +57,7 @@ export class TareaController {
 
     constructor(
         private gestorTareas: GestorTareas,
+        private gestorColaboradores: GestorColaboradores,
         private tareaProvider: TareaProvider
     ) { }
 
@@ -62,7 +65,7 @@ export class TareaController {
         const nombre = await TareaInputHandler.getNombreFromUsuario();
         if (!nombre || nombre.trim() === '') { return; }
         const fechaLimite = await TareaInputHandler.getFechaLimiteFromUsuario();
-        const colaborador = await TareaInputHandler.getColaboradorFromUsuario();
+        const colaborador = await TareaInputHandler.getColaboradorFromUsuario(this.gestorColaboradores);
 
         const tarea = new Tarea();
         tarea.nombre = nombre;
@@ -107,7 +110,7 @@ export class TareaController {
 
     async editarEncargado(nodo?: TareaTreeViewAdapter) {
         if (nodo && nodo.tarea) {
-            nodo.tarea.encargado = await TareaInputHandler.getColaboradorFromUsuario();
+            nodo.tarea.encargado = await TareaInputHandler.getColaboradorFromUsuario(this.gestorColaboradores);
             this.tareaProvider.refresh();
         }
     }

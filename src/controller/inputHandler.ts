@@ -84,8 +84,7 @@ export class TareaInputHandler {
         }
     }
 
-    static async getColaboradorFromUsuario() {
-        const gestor = new GestorColaboradores();
+    static async getColaboradorFromUsuario(gestor: GestorColaboradores) {
         const opcionesColaborador = gestor.consultarTodos().map(colaborador => new ColaboradorQuickPickAdapter(colaborador));
         opcionesColaborador.unshift(new ColaboradorQuickPickAdapter());  // Opción vacía
         const colaboradorQuickPickItem = await vscode.window.showQuickPick(opcionesColaborador, { placeHolder: 'Elige un colaborador (Deja en blanco para no seleccionar ninguno.)' });
