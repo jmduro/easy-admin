@@ -73,7 +73,7 @@ export class CalendarioPanel {
 	private async _update() {
 		const webview = this._panel.webview;
 
-		const tareas = this.obtenerTodasLasTareas();
+        const tareas = this.obtenerTodasLasTareas();
 
 		this._panel.webview.html = this._getHtmlForWebview(webview, tareas);
 		webview.onDidReceiveMessage(async (data) => {
@@ -93,10 +93,10 @@ export class CalendarioPanel {
 					break;
 				}
 				case "tareaAgregada": {
-					const nuevasTareas = this.obtenerTodasLasTareas();
-					this.initCalendar(nuevasTareas);
-					break;
-				}
+                    const nuevasTareas = this.obtenerTodasLasTareas();
+                    this.initCalendar(nuevasTareas);
+                    break;
+                }
 			}
 		});
 	}
@@ -109,6 +109,7 @@ export class CalendarioPanel {
 	private initCalendar(tareas: Tarea[]) {
 		console.log("Inicializando o actualizando el calendario con las tareas:", tareas);
 	}
+	
 
 	private _getHtmlForWebview(webview: vscode.Webview, tareas: Tarea[]) {
 		const stylesResetUri = webview.asWebviewUri(
@@ -121,48 +122,92 @@ export class CalendarioPanel {
 			vscode.Uri.joinPath(this._extensionUri, "src", "webview/calendario.css")
 		);
 
-		return `<!DOCTYPE html>
-		<html lang="en">
-		<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<link href="${stylesResetUri}" rel="stylesheet">
-			<link href="${stylesMainUri}" rel="stylesheet">
-            <link href="${stylesSkinUri}" rel="stylesheet">
-            <link href="${stylesSkinUri}" rel="stylesheet">
-		</head>
-		<body>
-			<!-- Agrega un contenedor para el calendario -->
-			<div id="calendar"></div>
-
-			<script>
-				// Incluye la lógica de FullCalendar aquí
-				${this.getFullCalendarScript()}
-			</script>
-		</body>
-	</html>`;
-	}
-	private getFullCalendarScript() {
 		return `
-            // Importa las bibliotecas de FullCalendar
-            import { Calendar } from '@fullcalendar/core';
-            import dayGridPlugin from '@fullcalendar/daygrid';
+		<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link href="${stylesResetUri}" rel="stylesheet">
+            <link href="${stylesMainUri}" rel="stylesheet">
+            <link href="${stylesSkinUri}" rel="stylesheet">
+            <style>
+                #calendar {
+                    font-family: Arial, sans-serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                }
+                #calendar th, #calendar td {
+                    border: 1px solid #dddddd;
+                    text-align: left;
+                    padding: 8px;
+                }
+            </style>
+        </head>
+        <body>
+            <table id="calendar">
+                <thead>
+                    <tr>
+                        <th>Domingo</th>
+                        <th>Lunes</th>
+                        <th>Martes</th>
+                        <th>Miércoles</th>
+                        <th>Jueves</th>
+                        <th>Viernes</th>
+                        <th>Sábado</th>
+                    </tr>
+                </thead>
+                <tbody id="calendarBody"></tbody>
+            </table>
 
-            // Crea el calendario
-            const calendarEl = document.getElementById('calendar');
-            const calendar = new Calendar(calendarEl, {
-                plugins: [dayGridPlugin],
-                events: getCalendarEvents(${Tarea}),
-            });
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const tareas = ${this.gestorTareas.consultarTodos()};
+                    const calendarBody = document.getElementById('calendarBody');
+                    ${this.initCalendarScript()}
+                });
+            </script>
+		</body>
+		</html>`;
+		
+	}
 
-            // Renderiza el calendario
-            calendar.render();
-        `;
+	private initCalendarScript() {
+		return `
+			const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+			const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getDay();
+	
+			let calendarHTML = '<tr>';
+			let dayCount = 1;
+	
+			// Rellena los días de la semana
+			for (let i = 0; i < 7; i++) {
+				calendarHTML += '<th>' + new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(new Date(0, 0, i + 1)) + '</th>';
+			}
+			calendarHTML += '</tr>';
+	
+			// Rellena el calendario
+			for (let i = 0; i < 6; i++) {
+				calendarHTML += '<tr>';
+				for (let j = 0; j < 7; j++) {
+					if ((i === 0 && j < firstDayOfMonth) || dayCount > daysInMonth) {
+						calendarHTML += '<td></td>';
+					} else {
+						const isTaskDay = tareas.some(tarea => {
+							const tareaDay = tarea.fechaLimite.getDate();
+							return tareaDay === dayCount;
+						});
+	
+						calendarHTML += '<td ' + (isTaskDay ? 'class="task-day"' : '') + '>' + dayCount + '</td>';
+						dayCount++;
+					}
+				}
+				calendarHTML += '</tr>';
+			}
+	
+			calendarBody.innerHTML = calendarHTML;
+		`;
 	}
-	private getCalendarEvents(tareas: Tarea[]) {
-		return tareas.map((tarea) => ({
-			title: tarea.nombre,
-			start: tarea.fechaLimite.toISOString().split('T')[0],
-		}));
-	}
+	
+	
 }
