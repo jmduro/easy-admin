@@ -1,4 +1,8 @@
 import * as vscode from "vscode";
+import { GestorTareas } from "../modelo/gestor";
+import { Tarea } from "../modelo/entidad";
+
+const gestorTareas = new GestorTareas();
 
 export class TareaPanel {
     public static currentPanel: TareaPanel | undefined;
@@ -68,7 +72,9 @@ export class TareaPanel {
     private async _update() {
         const webview = this._panel.webview;
 
-        this._panel.webview.html = this._getHtmlForWebview(webview);
+        const tareas = obtenerTodasLasTareas();
+
+        this._panel.webview.html = this._getHtmlForWebview(webview, tareas);
         webview.onDidReceiveMessage(async (data) => {
             switch (data.type) {
                 case "onInfo": {
@@ -89,13 +95,7 @@ export class TareaPanel {
         });
     }
 
-    private _getHtmlForWebview(webview: vscode.Webview) {
-        const scriptUri = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, "src", "media/main.js")
-        );
-        const scriptTarea = webview.asWebviewUri(
-            vscode.Uri.joinPath(this._extensionUri, "src", "webview/tareas.js")
-        );
+    private _getHtmlForWebview(webview: vscode.Webview, tareas: Tarea[]) {
         const stylesResetUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this._extensionUri, "src", "media/reset.css")
         );
@@ -106,43 +106,58 @@ export class TareaPanel {
             vscode.Uri.joinPath(this._extensionUri, "src", "webview/tareas.css")
         );
 
-        return `<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link href="${stylesResetUri}" rel="stylesheet">
-            <link href="${stylesMainUri}" rel="stylesheet">
-            <link rel="stylesheet" href="${stylesSkinUri}">
-        </head>
-        <body>
-            <!-- Tabla de tareas -->
-            <h1>Lista de Tareas</h1>
-            <table id="tasksTable">
-                <thead>
-                    <tr>
-                        <th>Actividad</th>
-                        <th>Fecha</th>
-                        <th>Detalles</th>
-                        <th>Asignado</th>
-                        <th>Completado</th>
-                    </tr>
-                </thead>
-                <tbody id="tasksTableBody"></tbody>
-            </table>
+        // Agrega las tareas a la tabla
+        const tasksTableBody = tareas.map(task => `
+            <tr>
+                <td>${task.nombre}</td>
+                <td>${task.fechaLimite.toDateString()}</td>
+                <td>${task.descripcion}</td>
+                <td>${task.encargado ? task.encargado : ''}</td>
+                <td>
+                    <input type="checkbox" name="completed" ${task.completado ? 'checked' : ''}>
+                </td>
+            </tr>
+        `).join('');
 
-            <!-- Barra de progreso -->
-            <div>
-                <label for="progressBar">Progress:</label>
-                <progress id="progressBar" value="0" max="100"></progress>
-                <span id="progressLabel">0%</span>
-                <!-- Agrega este botón al final de tu cuerpo HTML
+        return `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href="${stylesResetUri}" rel="stylesheet">
+                <link href="${stylesMainUri}" rel="stylesheet">
+                <link rel="stylesheet" href="${stylesSkinUri}">
+            </head>
+            <body>
+                <!-- Tabla de tareas -->
+                <h1>Lista de Tareas</h1>
+                <table id="tasksTable">
+                    <thead>
+                        <tr>
+                            <th>Actividad</th>
+                            <th>Fecha</th>
+                            <th>Detalles</th>
+                            <th>Asignado</th>
+                            <th>Completado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasksTableBody">${tasksTableBody}</tbody>
+                </table>
+
+                <!-- Barra de progreso -->
+                <div>
+                    <label for="progressBar">Progress:</label>
+                    <progress id="progressBar" value="0" max="100"></progress>
+                    <span id="progressLabel">0%</span>
+                    <!-- Agrega este botón al final de tu cuerpo HTML
                 <button id="updateProgressButton">Actualizar Progreso</button>  -->
-            </div>
-
-            <script src="${scriptTarea}"></script>
-        </body>
-        <script src="${scriptUri}" ></script>
-        </html>`;
+                </div>
+            </body>
+            </html>`;
     }
+}
+
+function obtenerTodasLasTareas(): Tarea[] {
+    return gestorTareas.consultarTodos();
 }
