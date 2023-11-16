@@ -24,8 +24,6 @@ export class Controller {
         this.colaboradorController = new ColaboradorController(gestorColaboradores, tareaProvider, colaboradorProvider);
         vscode.window.createTreeView('tareas', { treeDataProvider: tareaProvider });
         vscode.window.createTreeView('colaboradores', { treeDataProvider: colaboradorProvider });
-
-        // this.loadValues(gestorTareas, gestorColaboradores);  // ! Borrar en producción
     }
 
     private loadValues(gestorTareas: GestorTareas, gestorColaboradores: GestorColaboradores) {
