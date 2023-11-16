@@ -11,6 +11,8 @@ export class CalendarioPanel {
 	private readonly _extensionUri: vscode.Uri;
 	private _disposables: vscode.Disposable[] = [];
 
+	private gestorTareas = GestorTareas.getInstance();
+
 	public static createOrShow(extensionUri: vscode.Uri) {
 		const column = vscode.window.activeTextEditor
 			? vscode.window.activeTextEditor.viewColumn
@@ -150,7 +152,7 @@ export class CalendarioPanel {
             const calendarEl = document.getElementById('calendar');
             const calendar = new Calendar(calendarEl, {
                 plugins: [dayGridPlugin],
-                events: getCalendarEvents(${JSON.stringify(Tarea)}),
+                events: getCalendarEvents(${Tarea}),
             });
 
             // Renderiza el calendario
