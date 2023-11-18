@@ -14,8 +14,8 @@ export class Colaborador implements Entidad {
         if (obj === undefined) { return false; }
         if (this === obj) { return true; }
         if (typeof this !== typeof obj) { return false; }
-        let encargado: Colaborador = obj as Colaborador;
-        return this.nombre === encargado.nombre;
+        let objEncargado: Colaborador = obj as Colaborador;
+        return this.nombre === objEncargado.nombre;
     }
 
     toString(): string {
@@ -36,7 +36,7 @@ export class Tarea implements Entidad {
         if (obj === undefined) { return false; }
         if (this === obj) { return true; }
         if (typeof this !== typeof obj) { return false; }
-        let tarea: Tarea = obj as Tarea;
-        return this.nombre === tarea.nombre;
+        let objTarea: Tarea = obj as Tarea;
+        return this.nombre === objTarea.nombre;
     }
 }
