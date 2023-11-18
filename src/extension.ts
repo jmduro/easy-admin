@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { GestorColaboradores, GestorTareas } from './modelo/gestor';
+import { GestorFactory } from './modelo/gestor';
 import { ColaboradorTreeViewController, TareaTreeViewController } from './controller/controller';
 import { TareaPanel } from './webview/tareas';
 import { ColaboradorPanel } from './webview/colaboradores';
@@ -7,10 +7,10 @@ import { CalendarioPanel } from './webview/calendario';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	context.globalState.setKeysForSync(['tareas,', 'colaboradores']);
+	context.globalState.setKeysForSync(['tareas', 'colaboradores']);
 
-	const gestorTareas = GestorTareas.getInstance(context);
-	const gestorColaboradores = GestorColaboradores.getInstance(context);
+	const gestorTareas = GestorFactory.getGestorTareas(context);
+	const gestorColaboradores = GestorFactory.getGestorColaboradores(context);
 
 	const tareaController = new TareaTreeViewController(gestorTareas, gestorColaboradores);
 	const colaboradorController = new ColaboradorTreeViewController(gestorColaboradores);

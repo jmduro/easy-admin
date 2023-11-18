@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { GestorColaboradores, GestorTareas } from "../modelo/gestor";
+import { GestorFactory } from "../modelo/gestor";
 import { Colaborador } from "../modelo/entidad";
 
 export class ColaboradorPanel {
@@ -11,7 +11,7 @@ export class ColaboradorPanel {
 	private readonly _extensionUri: vscode.Uri;
 	private _disposables: vscode.Disposable[] = [];
 
-	private gestorColaboradores = GestorColaboradores.getInstance();
+	private gestorColaboradores = GestorFactory.getGestorColaboradores();
 
 	public static createOrShow(extensionUri: vscode.Uri) {
 		const column = vscode.window.activeTextEditor

@@ -7,16 +7,12 @@ import { ColaboradorInputHandler, TareaInputHandler } from './input_handler';
 
 export class TareaTreeViewController {
 
-    private gestorTareas: GestorTareas;
-    private gestorColaboradores: GestorColaboradores;
     private tareaProvider: TareaProvider;
 
     constructor(
-        gestorTareas: GestorTareas,
-        gestorColaboradores: GestorColaboradores
+        private gestorTareas: GestorTareas,
+        private gestorColaboradores: GestorColaboradores
     ) {
-        this.gestorTareas = gestorTareas;
-        this.gestorColaboradores = gestorColaboradores;
         this.tareaProvider = new TareaProvider(gestorTareas);
         vscode.window.createTreeView('tareas', { treeDataProvider: this.tareaProvider });
     }
@@ -85,11 +81,10 @@ export class TareaTreeViewController {
 
 export class ColaboradorTreeViewController {
 
-    private gestorColaboradores: GestorColaboradores;
     private colaboradorProvider: ColaboradorProvider;
 
     constructor(
-        gestorColaboradores: GestorColaboradores
+        private gestorColaboradores: GestorColaboradores
     ) {
         this.gestorColaboradores = gestorColaboradores;
         this.colaboradorProvider = new ColaboradorProvider(gestorColaboradores);

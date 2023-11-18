@@ -1,163 +1,91 @@
 import * as vscode from 'vscode';
-import { Tarea, Colaborador } from "./entidad";
+import { Tarea, Colaborador, Entidad } from "./entidad";
 
-interface Gestor<T> {
+export interface Gestor<T extends Entidad> {
 
     agregar(entidad: T): void;
-    modificar(id: number, entidad: T): void;
+    modificar(id: number, entidad: T): void; // TODO: Este método DEBE ser utilizado para modificar los objetos.
     eliminar(id: number): void;
-    buscar(entidad: T): T[] | undefined;
     consultarUno(id: number): T | undefined;
     consultarTodos(): T[];
 }
 
-export class GestorTareas implements Gestor<Tarea> {
+export abstract class GestorAbstracto<T extends Entidad> implements Gestor<T> {
 
-    private static id: number = 1;
-    private static tareas: Tarea[];
-    private static instance: GestorTareas;
+    protected id: number = 1;
+    protected entidades: T[] = [];
 
-    private constructor(
-        private context: vscode.ExtensionContext
-    ) {
-        this.context = context;
-        GestorTareas.tareas = this.context.globalState.get<Tarea[]>('tareas', []);
-    }
-
-    static getInstance(context?: vscode.ExtensionContext): GestorTareas {
-        if (!GestorTareas.instance && context) {
-            GestorTareas.instance = new GestorTareas(context);
-        }
-        return GestorTareas.instance;
-    }
-
-    agregar(entidad: Tarea): void {
-        let tarea = this.consultarUno(entidad.id);
-        if (tarea || entidad.equals(tarea)) { return; }
-        entidad.id = GestorTareas.id;
-        GestorTareas.tareas.push(entidad);
+    agregar(entidad: T): void {
+        if (entidad.equals(this.consultarUno(entidad.id))) { return; }
+        entidad.id = this.id;
+        this.id++;
+        this.entidades.push(entidad);
         this.guardarCambios();
-        this.notificarEvento('Tarea creada', `Se ha creado la tarea: ${entidad.nombre}`);
-        GestorTareas.id++;
     }
 
-    modificar(id: number, entidad: Tarea): void {
-        let tarea = this.consultarUno(id);
-        if (tarea) {
-            tarea = entidad;
-        }
+    modificar(id: number, entidad: T): void {
+        let e = this.consultarUno(id);
+        if (e) { e = entidad; }
         this.guardarCambios();
     }
 
     eliminar(id: number): void {
-        let tarea = this.consultarUno(id);
-        if (tarea) {
-            this.notificarEvento('Tarea eliminada', `Se ha eliminado la tarea: ${tarea.nombre}`);
-            GestorTareas.tareas.splice(GestorTareas.tareas.indexOf(tarea), 1);
-        }
+        let e = this.consultarUno(id);
+        if (e) { this.entidades.splice(this.entidades.indexOf(e), 1); }
         this.guardarCambios();
     }
 
-    buscar(entidad: Tarea): Tarea[] | undefined {
-        return GestorTareas.tareas.filter(tarea => tarea.like(entidad));
-    }
-
-    consultarUno(id: number): Tarea | undefined {
+    consultarUno(id: number): T | undefined {
         if (id <= 0) { return undefined; }
-        return GestorTareas.tareas.find(tarea => tarea.id === id);
+        return this.entidades.find(e => e.id === id);
     }
 
-    consultarTodos(): Tarea[] {
-        return GestorTareas.tareas;
+    consultarTodos(): T[] {
+        return this.entidades;
     }
 
-    private guardarCambios() {
-        this.context.globalState.update('tareas', GestorTareas.tareas);
+    protected abstract guardarCambios(): void;
+}
+
+export class GestorTareas extends GestorAbstracto<Tarea> {
+
+    constructor(
+        private context: vscode.ExtensionContext
+    ) {
+        super();
+        this.entidades = this.context.globalState.get<Tarea[]>('tareas', []);
     }
 
-    private notificarEvento(titulo: string, mensaje: string) {
-        vscode.window.showInformationMessage(mensaje, { title: titulo });
-    }
-
-    verificarFechas() {
-        const hoy = new Date();
-
-        for (const tarea of GestorTareas.tareas) {
-            const fechaTarea = new Date(tarea.fechaLimite);
-            if (this.sonFechasIguales(hoy, fechaTarea)) {
-                this.notificarEvento('Recordatorio de tarea', `La tarea '${tarea.nombre}' se entrega hoy.`);
-            }
-        }
-    }
-
-    private sonFechasIguales(fecha1: Date, fecha2: Date): boolean {
-        return (
-            fecha1.getFullYear() === fecha2.getFullYear() &&
-            fecha1.getMonth() === fecha2.getMonth() &&
-            fecha1.getDate() === fecha2.getDate()
-        );
+    protected guardarCambios(): void {
+        this.context.globalState.update('tareas', this.entidades);
     }
 }
 
-export class GestorColaboradores implements Gestor<Colaborador> {
+export class GestorColaboradores extends GestorAbstracto<Colaborador> {
 
-    private static id: number = 1;
-    private static colaboradores: Colaborador[];
-    private static instance: GestorColaboradores;
-
-    private constructor(
+    constructor(
         private context: vscode.ExtensionContext
     ) {
-        this.context = context;
-        GestorColaboradores.colaboradores = this.context.globalState.get<Colaborador[]>('colaboradores', []);
+        super();
+        this.entidades = this.context.globalState.get<Colaborador[]>('colaboradores', []);
     }
 
-    static getInstance(context?: vscode.ExtensionContext): GestorColaboradores {
-        if (!GestorColaboradores.instance && context) {
-            GestorColaboradores.instance = new GestorColaboradores(context);
-        }
-        return GestorColaboradores.instance;
+    protected guardarCambios(): void {
+        this.context.globalState.update('colaboradores', this.entidades);
+    }
+}
+
+export class GestorFactory {
+    private static gestorTareas: GestorTareas;
+    private static gestorColaboradores: GestorColaboradores;
+
+    static getGestorTareas(context?: vscode.ExtensionContext): GestorTareas {
+        if (context) { GestorFactory.gestorTareas = new GestorTareas(context); }
+        return GestorFactory.gestorTareas;
     }
 
-    agregar(entidad: Colaborador): void {
-        let colaborador = this.consultarUno(entidad.id);
-        if (colaborador || entidad.equals(colaborador)) { return; }
-        entidad.id = GestorColaboradores.id;
-        GestorColaboradores.colaboradores.push(entidad);
-        GestorColaboradores.id++;
-        this.guardarCambios();
-    }
-
-    modificar(id: number, entidad: Colaborador): void {
-        let colaborador = this.consultarUno(id);
-        if (colaborador) {
-            colaborador = entidad;
-        }
-        this.guardarCambios();
-    }
-
-    eliminar(id: number): void {
-        let colaborador = this.consultarUno(id);
-        if (colaborador) {
-            GestorColaboradores.colaboradores.splice(GestorColaboradores.colaboradores.indexOf(colaborador), 1);
-        }
-        this.guardarCambios();
-    }
-
-    buscar(entidad: Colaborador): Colaborador[] | undefined {
-        return GestorColaboradores.colaboradores.filter(colaborador => colaborador.like(entidad));
-    }
-
-    consultarUno(id: number): Colaborador | undefined {
-        if (id <= 0) { return undefined; }
-        return GestorColaboradores.colaboradores.find(colaborador => colaborador.id === id);
-    }
-
-    consultarTodos(): Colaborador[] {
-        return GestorColaboradores.colaboradores;
-    }
-
-    private guardarCambios() {
-        this.context.globalState.update('colaboradores', GestorColaboradores.colaboradores);
+    static getGestorColaboradores(context?: vscode.ExtensionContext): GestorColaboradores {
+        if (context) { GestorFactory.gestorColaboradores = new GestorColaboradores(context); }
+        return GestorFactory.gestorColaboradores;
     }
 }

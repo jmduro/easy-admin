@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { GestorTareas } from "../modelo/gestor";
+import { GestorFactory } from "../modelo/gestor";
 import { Tarea } from "../modelo/entidad";
 
 export class TareaPanel {
@@ -11,7 +11,7 @@ export class TareaPanel {
     private readonly _extensionUri: vscode.Uri;
     private _disposables: vscode.Disposable[] = [];
 
-    private gestorTareas = GestorTareas.getInstance();
+    private gestorTareas = GestorFactory.getGestorTareas();
 
     public static createOrShow(extensionUri: vscode.Uri) {
         const column = vscode.window.activeTextEditor

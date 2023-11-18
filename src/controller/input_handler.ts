@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { GestorColaboradores } from '../modelo/gestor';
 import { ColaboradorQuickPickAdapter } from '../modelo/adapter';
+import { GestorColaboradores } from '../modelo/gestor';
 
 export class TareaInputHandler {
 

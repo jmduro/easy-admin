@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { GestorTareas } from "../modelo/gestor";
 import { Tarea } from "../modelo/entidad";
+import { GestorFactory } from "../modelo/gestor";
 
 export class CalendarioPanel {
 	public static currentPanel: CalendarioPanel | undefined;
@@ -11,7 +11,7 @@ export class CalendarioPanel {
 	private readonly _extensionUri: vscode.Uri;
 	private _disposables: vscode.Disposable[] = [];
 
-	private gestorTareas = GestorTareas.getInstance();
+	private gestorTareas = GestorFactory.getGestorTareas();
 
 	public static createOrShow(extensionUri: vscode.Uri) {
 		const column = vscode.window.activeTextEditor
@@ -102,7 +102,7 @@ export class CalendarioPanel {
 	}
 
 	private obtenerTodasLasTareas(): Tarea[] {
-		const gestorTareas = GestorTareas.getInstance();
+		const gestorTareas = GestorFactory.getGestorTareas();
 		return gestorTareas.consultarTodos();
 	}
 

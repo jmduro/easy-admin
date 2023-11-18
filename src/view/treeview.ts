@@ -44,7 +44,7 @@ export class TareaProvider implements vscode.TreeDataProvider<TareaTreeViewAdapt
         // Encargado
         item = new TareaTreeViewAdapter(element.tarea);
         item.label = 'Encargado';
-        item.description = item.tarea?.encargado;
+        item.description = item.tarea?.encargado?.toString();
         item.tooltip = item.description;
         item.contextValue = 'encargadoTarea';
         items.push(item);
