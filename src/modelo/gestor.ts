@@ -4,7 +4,7 @@ import { Tarea, Colaborador, Entidad } from "./entidad";
 export interface Gestor<T extends Entidad> {
 
     agregar(entidad: T): void;
-    modificar(id: number, entidad: T): void; // TODO: Este método DEBE ser utilizado para modificar los objetos.
+    modificar(id: number, entidad: T): void;
     eliminar(id: number): void;
     consultarUno(id: number): T | undefined;
     consultarTodos(): T[];
