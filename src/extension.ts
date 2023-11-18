@@ -7,6 +7,8 @@ import { CalendarioPanel } from './webview/calendario';
 
 export function activate(context: vscode.ExtensionContext) {
 
+	context.globalState.setKeysForSync(['tareas,', 'colaboradores']);
+
 	const gestorTareas = GestorTareas.getInstance(context);
 	const gestorColaboradores = GestorColaboradores.getInstance(context);
 
