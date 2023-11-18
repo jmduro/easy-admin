@@ -7,14 +7,14 @@ import { ColaboradorInputHandler, TareaInputHandler } from './input_handler';
 
 export class TareaTreeViewController {
 
-    private tareaProvider: TareaProvider;
+    private provider: TareaProvider;
 
     constructor(
         private gestorTareas: GestorTareas,
         private gestorColaboradores: GestorColaboradores
     ) {
-        this.tareaProvider = new TareaProvider(gestorTareas);
-        vscode.window.createTreeView('tareas', { treeDataProvider: this.tareaProvider });
+        this.provider = new TareaProvider(gestorTareas);
+        vscode.window.createTreeView('tareas', { treeDataProvider: this.provider });
     }
 
     async agregarTarea() {
@@ -29,14 +29,14 @@ export class TareaTreeViewController {
         if (colaborador) { tarea.encargado = colaborador; }
 
         this.gestorTareas.agregar(tarea);
-        this.tareaProvider.refresh();
+        this.provider.refresh();
     }
 
     async eliminarTarea(nodo?: TareaTreeViewAdapter) {
         if (nodo && nodo.tarea) {
             if (await TareaInputHandler.getRespuestaEliminarTareaFromUsuario()) {
                 this.gestorTareas.eliminar(nodo.tarea.id);
-                this.tareaProvider.refresh();
+                this.provider.refresh();
             }
         }
     }
@@ -45,7 +45,7 @@ export class TareaTreeViewController {
         if (nodo && nodo.tarea) {
             nodo.tarea.completado = !nodo.tarea.completado;
             this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
-            this.tareaProvider.refresh();
+            this.provider.refresh();
         }
     }
 
@@ -55,7 +55,7 @@ export class TareaTreeViewController {
             if (!nombre || nombre.trim() === '') { return; }
             nodo.tarea.nombre = nombre;
             this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
-            this.tareaProvider.refresh();
+            this.provider.refresh();
         }
     }
 
@@ -63,7 +63,7 @@ export class TareaTreeViewController {
         if (nodo && nodo.tarea) {
             nodo.tarea.fechaLimite = await TareaInputHandler.getFechaLimiteFromUsuario(nodo.tarea.fechaLimite);
             this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
-            this.tareaProvider.refresh();
+            this.provider.refresh();
         }
     }
 
@@ -71,7 +71,7 @@ export class TareaTreeViewController {
         if (nodo && nodo.tarea) {
             nodo.tarea.encargado = await TareaInputHandler.getColaboradorFromUsuario(this.gestorColaboradores);
             this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
-            this.tareaProvider.refresh();
+            this.provider.refresh();
         }
     }
 
@@ -79,7 +79,7 @@ export class TareaTreeViewController {
         if (nodo && nodo.tarea) {
             nodo.tarea.descripcion = await TareaInputHandler.getDescripcionFromUsuario(nodo.tarea.descripcion);
             this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
-            this.tareaProvider.refresh();
+            this.provider.refresh();
         }
     }
 }
