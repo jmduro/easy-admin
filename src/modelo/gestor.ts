@@ -1,5 +1,5 @@
+import * as vscode from 'vscode';
 import { Tarea, Colaborador } from "./entidad";
-import { window, ExtensionContext } from 'vscode';
 
 interface Gestor<T> {
 
@@ -18,13 +18,13 @@ export class GestorTareas implements Gestor<Tarea> {
     private static instance: GestorTareas;
 
     private constructor(
-        private context: ExtensionContext
+        private context: vscode.ExtensionContext
     ) {
         this.context = context;
         GestorTareas.tareas = this.context.globalState.get<Tarea[]>('tareas', []);
     }
 
-    static getInstance(context?: ExtensionContext): GestorTareas {
+    static getInstance(context?: vscode.ExtensionContext): GestorTareas {
         if (!GestorTareas.instance && context) {
             GestorTareas.instance = new GestorTareas(context);
         }
@@ -76,7 +76,7 @@ export class GestorTareas implements Gestor<Tarea> {
     }
 
     private notificarEvento(titulo: string, mensaje: string) {
-        window.showInformationMessage(mensaje, { title: titulo });
+        vscode.window.showInformationMessage(mensaje, { title: titulo });
     }
 
     verificarFechas() {
@@ -106,13 +106,13 @@ export class GestorColaboradores implements Gestor<Colaborador> {
     private static instance: GestorColaboradores;
 
     private constructor(
-        private context: ExtensionContext
+        private context: vscode.ExtensionContext
     ) {
         this.context = context;
         GestorColaboradores.colaboradores = this.context.globalState.get<Colaborador[]>('colaboradores', []);
     }
 
-    static getInstance(context?: ExtensionContext): GestorColaboradores {
+    static getInstance(context?: vscode.ExtensionContext): GestorColaboradores {
         if (!GestorColaboradores.instance && context) {
             GestorColaboradores.instance = new GestorColaboradores(context);
         }
