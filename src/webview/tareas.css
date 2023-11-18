@@ -18,6 +18,10 @@ th, td {
     text-align: left;
 }
 
+td.completado {
+    text-align: center;
+}
+
 form {
     margin-bottom: 20px;
 }

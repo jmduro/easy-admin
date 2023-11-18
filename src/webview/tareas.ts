@@ -112,9 +112,7 @@ export class TareaPanel {
                 <td>${new Date(task.fechaLimite).toDateString()}</td>
                 <td>${task.descripcion}</td>
                 <td>${task.encargado ? task.encargado : ''}</td>
-                <td>
-                    <input type="checkbox" name="completed" ${task.completado ? 'checked' : ''}>
-                </td>
+                <td class="completado">${task.encargado ? '✅' : '❌'}</td>
             </tr>
         `).join('');
 
@@ -135,9 +133,9 @@ export class TareaPanel {
                     <thead>
                         <tr>
                             <th>Actividad</th>
-                            <th>Fecha</th>
+                            <th>Fecha Límite</th>
                             <th>Detalles</th>
-                            <th>Asignado</th>
+                            <th>Encargado</th>
                             <th>Completado</th>
                         </tr>
                     </thead>
