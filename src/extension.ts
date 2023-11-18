@@ -15,6 +15,8 @@ export function activate(context: vscode.ExtensionContext) {
 	const tareaController = new TareaTreeViewController(gestorTareas, gestorColaboradores);
 	const colaboradorController = new ColaboradorTreeViewController(gestorColaboradores);
 
+	tareaController.verificarFechas();
+
 	vscode.commands.registerCommand('easy-admin.agregarTarea', () => tareaController.agregarTarea());
 	vscode.commands.registerCommand('easy-admin.eliminarTarea', (nodo) => tareaController.eliminarTarea(nodo));
 	vscode.commands.registerCommand('easy-admin.cambiarEstado', (nodo) => tareaController.cambiarEstado(nodo));

@@ -3,7 +3,7 @@ import { Tarea, Colaborador, Entidad } from "./entidad";
 
 export interface Gestor<T extends Entidad> {
 
-    agregar(entidad: T): void;
+    agregar(entidad: T): boolean;
     modificar(id: number, entidad: T): void;
     eliminar(id: number): void;
     consultarUno(id: number): T | undefined;
@@ -15,12 +15,13 @@ export abstract class GestorAbstracto<T extends Entidad> implements Gestor<T> {
     protected id: number = 1;
     protected entidades: T[] = [];
 
-    agregar(entidad: T): void {
-        if (entidad.equals(this.consultarUno(entidad.id))) { return; }
+    agregar(entidad: T): boolean {
+        if (entidad.equals(this.consultarUno(entidad.id))) { return false; }
         entidad.id = this.id;
         this.id++;
         this.entidades.push(entidad);
         this.guardarCambios();
+        return true;
     }
 
     modificar(id: number, entidad: T): void {

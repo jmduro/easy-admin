@@ -1,9 +1,20 @@
 import * as vscode from 'vscode';
-import { Colaborador, Tarea } from '../modelo/entidad';
+import { Colaborador, Entidad, Tarea } from '../modelo/entidad';
 import { GestorColaboradores, GestorTareas } from '../modelo/gestor';
 import { ColaboradorTreeViewAdapter, TareaTreeViewAdapter } from '../modelo/adapter';
 import { ColaboradorProvider, TareaProvider } from '../view/treeview';
 import { ColaboradorInputHandler, TareaInputHandler } from './input_handler';
+
+class Notificador {
+
+    static notificarEvento(titulo: string, mensaje: string) {
+        vscode.window.showInformationMessage(mensaje, { title: titulo });
+    }
+
+    static notificarError(titulo: string, mensaje: string) {
+        vscode.window.showErrorMessage(mensaje, { title: titulo });
+    }
+}
 
 export class TareaTreeViewController {
 
@@ -28,7 +39,8 @@ export class TareaTreeViewController {
         tarea.fechaLimite = fechaLimite;
         if (colaborador) { tarea.encargado = colaborador; }
 
-        this.gestorTareas.agregar(tarea);
+        const agregado = this.gestorTareas.agregar(tarea);
+        if (!agregado) { Notificador.notificarError('Error al crear tarea', `Ya existe una tarea con el nombre '${nombre}'`); }
         this.provider.refresh();
     }
 
@@ -81,6 +93,24 @@ export class TareaTreeViewController {
             this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
             this.provider.refresh();
         }
+    }
+
+    verificarFechas() {
+        const hoy = new Date();
+        for (const tarea of this.gestorTareas.consultarTodos()) {
+            const fechaTarea = new Date(tarea.fechaLimite);
+            if (this.sonFechasIguales(hoy, fechaTarea)) {
+                Notificador.notificarEvento('Recordatorio de tarea', `La tarea '${tarea.nombre}' se entrega hoy.`);
+            }
+        }
+    }
+
+    private sonFechasIguales(fecha1: Date, fecha2: Date): boolean {
+        return (
+            fecha1.getFullYear() === fecha2.getFullYear() &&
+            fecha1.getMonth() === fecha2.getMonth() &&
+            fecha1.getDate() === fecha2.getDate()
+        );
     }
 }
 
