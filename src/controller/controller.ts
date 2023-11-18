@@ -44,6 +44,7 @@ export class TareaTreeViewController {
     cambiarEstado(nodo?: TareaTreeViewAdapter) {
         if (nodo && nodo.tarea) {
             nodo.tarea.completado = !nodo.tarea.completado;
+            this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
             this.tareaProvider.refresh();
         }
     }
@@ -53,6 +54,7 @@ export class TareaTreeViewController {
             const nombre = await TareaInputHandler.getNombreFromUsuario(nodo.tarea.nombre);
             if (!nombre || nombre.trim() === '') { return; }
             nodo.tarea.nombre = nombre;
+            this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
             this.tareaProvider.refresh();
         }
     }
@@ -60,6 +62,7 @@ export class TareaTreeViewController {
     async editarFechaLimite(nodo?: TareaTreeViewAdapter) {
         if (nodo && nodo.tarea) {
             nodo.tarea.fechaLimite = await TareaInputHandler.getFechaLimiteFromUsuario(nodo.tarea.fechaLimite);
+            this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
             this.tareaProvider.refresh();
         }
     }
@@ -67,6 +70,7 @@ export class TareaTreeViewController {
     async editarEncargado(nodo?: TareaTreeViewAdapter) {
         if (nodo && nodo.tarea) {
             nodo.tarea.encargado = await TareaInputHandler.getColaboradorFromUsuario(this.gestorColaboradores);
+            this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
             this.tareaProvider.refresh();
         }
     }
@@ -74,6 +78,7 @@ export class TareaTreeViewController {
     async editarDescripcion(nodo?: TareaTreeViewAdapter) {
         if (nodo && nodo.tarea) {
             nodo.tarea.descripcion = await TareaInputHandler.getDescripcionFromUsuario(nodo.tarea.descripcion);
+            this.gestorTareas.modificar(nodo.tarea.id, nodo.tarea);
             this.tareaProvider.refresh();
         }
     }
@@ -81,14 +86,14 @@ export class TareaTreeViewController {
 
 export class ColaboradorTreeViewController {
 
-    private colaboradorProvider: ColaboradorProvider;
+    private provider: ColaboradorProvider;
 
     constructor(
-        private gestorColaboradores: GestorColaboradores
+        private gestor: GestorColaboradores
     ) {
-        this.gestorColaboradores = gestorColaboradores;
-        this.colaboradorProvider = new ColaboradorProvider(gestorColaboradores);
-        vscode.window.createTreeView('colaboradores', { treeDataProvider: this.colaboradorProvider });
+        this.gestor = gestor;
+        this.provider = new ColaboradorProvider(gestor);
+        vscode.window.createTreeView('colaboradores', { treeDataProvider: this.provider });
     }
 
     async agregarColaborador() {
@@ -102,15 +107,15 @@ export class ColaboradorTreeViewController {
         colaborador.puesto = puesto;
         colaborador.correo = correo;
 
-        this.gestorColaboradores.agregar(colaborador);
-        this.colaboradorProvider.refresh();
+        this.gestor.agregar(colaborador);
+        this.provider.refresh();
     }
 
     async eliminarColaborador(nodo?: ColaboradorTreeViewAdapter) {
         if (nodo && nodo.colaborador) {
             if (await ColaboradorInputHandler.getRespuestaEliminarColaboradorFromUsuario()) {
-                this.gestorColaboradores.eliminar(nodo.colaborador.id);
-                this.colaboradorProvider.refresh();
+                this.gestor.eliminar(nodo.colaborador.id);
+                this.provider.refresh();
             }
         }
     }
@@ -119,21 +124,24 @@ export class ColaboradorTreeViewController {
         if (nodo && nodo.colaborador) {
             const nombre = await ColaboradorInputHandler.getNombreFromUsuario(nodo.colaborador.nombre);
             if (nombre && nombre.trim() !== '') { nodo.colaborador.nombre = nombre; }
-            this.colaboradorProvider.refresh();
+            this.gestor.modificar(nodo.colaborador.id, nodo.colaborador);
+            this.provider.refresh();
         }
     }
 
     async editarPuesto(nodo?: ColaboradorTreeViewAdapter) {
         if (nodo && nodo.colaborador) {
             nodo.colaborador.puesto = await ColaboradorInputHandler.getPuestoFromUsuario(nodo.colaborador.puesto);
-            this.colaboradorProvider.refresh();
+            this.gestor.modificar(nodo.colaborador.id, nodo.colaborador);
+            this.provider.refresh();
         }
     }
 
     async editarCorreo(nodo?: ColaboradorTreeViewAdapter) {
         if (nodo && nodo.colaborador) {
             nodo.colaborador.correo = await ColaboradorInputHandler.getCorreoFromUsuario(nodo.colaborador.correo);
-            this.colaboradorProvider.refresh();
+            this.gestor.modificar(nodo.colaborador.id, nodo.colaborador);
+            this.provider.refresh();
         }
     }
 }
